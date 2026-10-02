@@ -1,0 +1,542 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EnteteDePage from "../components/EnteteDePage.astro";
+import BandeauCTA from "../components/BandeauCTA.astro";
+import Icone from "../components/Icone.astro";
+import portrait from "../assets/images/apiculteur-portrait.jpg";
+import ruches from "../assets/images/ruches-clairiere.jpg";
+import rayon from "../assets/images/rayon-abeilles.jpg";
+
+/* --- Les neuf ruchers --- */
+const ruchers = [
+  {
+    nom: "Le Clos Doré",
+    altitude: "620 m",
+    colonies: 32,
+    flore: "Acacia, aubépine, ronce",
+    exposition: "Coteau plein sud, abrité du vent du nord",
+  },
+  {
+    nom: "La Combe Verte",
+    altitude: "680 m",
+    colonies: 28,
+    flore: "Tilleul, trèfle blanc, châtaignier",
+    exposition: "Fond de vallon humide, le long du ruisseau",
+  },
+  {
+    nom: "Les Chênes Tors",
+    altitude: "710 m",
+    colonies: 24,
+    flore: "Châtaignier, sapin, framboisier sauvage",
+    exposition: "Lisière de forêt, mi-ombre l'après-midi",
+  },
+  {
+    nom: "Le Plateau des Bruyères",
+    altitude: "840 m",
+    colonies: 40,
+    flore: "Callune, myrtille, genêt",
+    exposition: "Lande ouverte, rucher d'été uniquement",
+  },
+];
+
+/* --- Ce que nous faisons / ne faisons jamais --- */
+const pratiques = {
+  oui: [
+    "Nous laissons 14 à 18 kg de miel par ruche pour l'hivernage, avant toute récolte.",
+    "Nous élevons nos propres reines à partir des colonies les plus douces et les plus résistantes du cheptel.",
+    "Nous traitons le varroa à l'acide oxalique et à l'acide formique, deux molécules organiques autorisées en bio.",
+    "Nous construisons nos ruches en douglas non traité, scié par la scierie du village, et nous les peignons à l'huile de lin.",
+    "Nous renouvelons un tiers des cadres chaque année pour que la cire ne stocke jamais de résidus.",
+    "Nous notons tout : chaque visite, chaque colonie, chaque pesée, dans un carnet que vous pouvez consulter.",
+  ],
+  non: [
+    "Pas de transhumance longue distance : nos colonies ne montent jamais dans un camion pour traverser la France.",
+    "Pas de nourrissement spéculatif au sirop de glucose industriel pour forcer la ponte au printemps.",
+    "Pas d'acaricide de synthèse, pas d'antibiotique, pas de lanière chimique dans les ruches.",
+    "Pas de reines importées d'Europe de l'Est ou d'Argentine, pas de remérage systématique annuel.",
+    "Pas de chauffage du miel, pas de filtration sous pression, pas de mélange entre deux floraisons.",
+    "Pas de pots « origine UE et hors UE » : tout ce que nous vendons sort de nos ruches.",
+  ],
+};
+
+/* --- Calendrier apicole --- */
+const saisons = [
+  {
+    periode: "Février → avril",
+    titre: "Le réveil",
+    icone: "soleil",
+    texte:
+      "Première visite de printemps dès que le thermomètre dépasse 14 °C. On soupèse, on écoute, on vérifie que la reine a repris sa ponte. Les colonies sortent sur le saule marsault et le pissenlit — leurs premières protéines depuis l'automne. C'est aussi le moment où l'on découvre, parfois, qu'une ruche n'a pas passé l'hiver.",
+  },
+  {
+    periode: "Mai → juillet",
+    titre: "La pleine saison",
+    icone: "abeille",
+    texte:
+      "Tout se joue en dix semaines. Pose des hausses, surveillance de l'essaimage tous les neuf jours, élevage des jeunes reines, et les premières extractions dès la fin mai pour l'acacia. On travaille sept jours sur sept, on dort peu, et on surveille la météo comme un marin.",
+  },
+  {
+    periode: "Août → septembre",
+    titre: "Les dernières récoltes",
+    icone: "pot-miel",
+    texte:
+      "Montée des quarante ruches sur les landes à callune. Dernière extraction, puis bilan sanitaire complet du cheptel : comptage du varroa sur chaque colonie, traitement, réunion des ruches trop faibles. On rend les hausses vides aux abeilles pour qu'elles les nettoient.",
+  },
+  {
+    periode: "Octobre → janvier",
+    titre: "Le temps long",
+    icone: "flocon",
+    texte:
+      "Les abeilles se mettent en grappe, nous ouvrons l'atelier. Réparation et peinture des ruches, filage des cadres, fonte de la cire, fabrication des bougies, ateliers du mercredi. C'est aussi la saison des marchés de Noël, des comptes et de la planification de l'année suivante.",
+  },
+] as const;
+
+/* --- Engagements chiffrés --- */
+const engagements = [
+  { valeur: "300 m", libelle: "de haies mellifères plantées chaque année" },
+  { valeur: "2 ha", libelle: "de jachères fleuries semées et non fauchées" },
+  { valeur: "0", libelle: "traitement de synthèse depuis la création" },
+  { valeur: "92 %", libelle: "de taux de survie hivernale (moyenne 5 ans)" },
+  { valeur: "15 km", libelle: "rayon maximal entre deux ruchers" },
+  { valeur: "100 %", libelle: "des pots consignés et réemployés" },
+];
+
+const donneesStructurees = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "Notre histoire — Rucher des Hautes Bruyères",
+  description:
+    "Le quotidien d'un apiculteur des Monts du Lyonnais : neuf ruchers sédentaires, des méthodes d'élevage respectueuses des colonies et un calendrier rythmé par les floraisons.",
+};
+---
+
+<BaseLayout
+  titre="Notre histoire & le rucher"
+  description="Quinze ans d'apiculture dans les Monts du Lyonnais : le quotidien du rucher, l'environnement de nos neuf implantations et nos méthodes d'élevage respectueuses des colonies."
+  donneesStructurees={donneesStructurees}
+>
+  <EnteteDePage
+    surtitre="Notre histoire"
+    titre="Quinze ans à écouter des colonies"
+    intro="Il n'y a pas de secret de fabrication chez nous, seulement des choix — parfois coûteux — répétés saison après saison. Voici lesquels, et pourquoi."
+    filAriane={[{ libelle: "Accueil", href: "/" }, { libelle: "Le rucher" }]}
+  />
+
+  <!-- ============== Le récit ============== -->
+  <section class="bg-creme pb-20 sm:pb-28" aria-labelledby="titre-recit">
+    <div class="conteneur">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <figure class="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+          <div class="overflow-hidden rounded-[2rem] shadow-relief">
+            <Image
+              src={portrait}
+              alt="Les mains de Mathieu Vasseur tenant un cadre de ruche couvert d'alvéoles de miel operculées, le visage visible derrière un voile relevé."
+              widths={[400, 640, 900]}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              loading="eager"
+              class="aspect-4/5 w-full object-cover"
+            />
+          </div>
+          <figcaption class="mt-4 text-[0.8125rem] leading-relaxed text-grisdoux">
+            <strong class="font-semibold text-encre">Mathieu Vasseur</strong> —
+            ancien ingénieur agronome, installé en apiculture en 2009 après
+            trois ans de formation auprès d'un apiculteur de la Loire.
+          </figcaption>
+        </figure>
+
+        <div class="lg:col-span-7">
+          <h2 id="titre-recit" class="sr-only">Le récit du rucher</h2>
+
+          <div class="prose-miel">
+            <p class="lettrine">
+              La première ruche était un cadeau de départ à la retraite — celle
+              d'un voisin qui n'arrivait plus à monter jusqu'à son rucher. Elle
+              est restée six mois au fond du jardin avant que j'ose l'ouvrir.
+              Quand je l'ai fait, en avril 2008, j'ai mis vingt minutes à
+              refermer le toit tellement je regardais. Il y avait là-dedans une
+              organisation que je ne comprenais pas, et c'est exactement ce qui
+              m'a attrapé.
+            </p>
+
+            <p>
+              J'étais alors ingénieur agronome dans une coopérative céréalière,
+              à conseiller des doses de produits phytosanitaires. Il y a une
+              forme d'ironie à passer ses journées à recommander des
+              insecticides et ses soirées à s'inquiéter pour un essaim. L'année
+              suivante, j'ai démissionné. Claire, qui était graphiste, a tenu
+              le budget de la maison pendant trois ans pendant que j'apprenais
+              le métier chez Bernard Rochette, dans les Monts du Forez. Il
+              m'a appris une seule chose, mais il me l'a répétée mille fois :
+              <strong>une colonie te dit tout, à condition de te taire.</strong>
+            </p>
+
+            <h3>Des matins qui commencent à cinq heures</h3>
+
+            <p>
+              De mai à juillet, la journée démarre avant les abeilles. On
+              charge l'enfumoir, les hausses vides, le lève-cadre, et on monte
+              au premier rucher à la fraîche — les colonies sont plus calmes
+              avant que le soleil ne tape. Une visite de contrôle, c'est neuf
+              minutes par ruche si tout va bien : on soupèse par l'arrière pour
+              estimer les réserves, on cherche les cellules royales sous les
+              cadres, on vérifie la régularité du couvain. On note tout sur une
+              ardoise fixée au toit.
+            </p>
+
+            <p>
+              L'après-midi, c'est la miellerie. Désoperculation au couteau,
+              extracteur à cadres radiaux, maturation vingt et un jours en cuve
+              inox pour que les bulles d'air remontent toutes seules. On met en
+              pot au fil des commandes, jamais à l'avance : un miel vit mieux
+              dans son maturateur que dans un carton de pots qui attend.
+            </p>
+
+            <h3>Ce que l'on apprend en quinze ans</h3>
+
+            <p>
+              Qu'une bonne année ne compense pas deux mauvaises. Que le
+              frelon asiatique a changé le métier plus vite que le climat. Que
+              les colonies qui survivent le mieux ne sont jamais les plus
+              productives, et qu'il faut choisir. Qu'un apiculteur passe en
+              réalité très peu de temps avec ses abeilles : le reste, c'est de
+              la menuiserie, de la comptabilité, du transport et du lavage de
+              matériel.
+            </p>
+
+            <p>
+              Et puis qu'on ne fait pas ce métier seul. Claire a repris la
+              transformation, les coffrets et les marchés ; c'est elle qui a
+              inventé les ateliers, en 2014, parce qu'elle trouvait dommage que
+              tout ça reste caché derrière une clôture. Aujourd'hui, quatorze
+              cents personnes passent chaque année dans nos ruchers. C'est
+              devenu, honnêtement, la partie du travail dont nous sommes les
+              plus fiers.
+            </p>
+          </div>
+
+          <!-- Citation mise en exergue -->
+          <blockquote
+            class="mt-12 rounded-2xl border-l-4 border-miel-500 bg-sable px-7 py-8 sm:px-9"
+          >
+            <p class="font-display text-xl italic leading-relaxed text-anthracite sm:text-2xl">
+              « On n'élève pas des abeilles comme on élève des poules. On leur
+              met un toit, on écarte ce qui les tue, et on prélève le surplus.
+              Tout le reste, c'est elles qui le font. »
+            </p>
+            <footer class="mt-5 text-sm font-medium text-grisdoux">
+              Mathieu Vasseur
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== L'environnement des ruches ============== -->
+  <section
+    id="territoire"
+    class="scroll-mt-28 bg-sable py-20 sm:py-28"
+    aria-labelledby="titre-territoire"
+  >
+    <div class="conteneur">
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <figure>
+          <div class="overflow-hidden rounded-[2rem] shadow-relief">
+            <Image
+              src={ruches}
+              alt="Six ruches en bois patiné dans une clairière forestière enveloppée de brume matinale, entourées de hautes herbes et de fougères."
+              widths={[480, 768, 1100]}
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              loading="lazy"
+              class="aspect-4/3 w-full object-cover"
+            />
+          </div>
+        </figure>
+
+        <div>
+          <p class="surtitre">Le territoire</p>
+          <h2
+            id="titre-territoire"
+            class="mt-5 font-display text-h2 font-medium text-anthracite"
+          >
+            Neuf ruchers, tous à vélo de la miellerie
+          </h2>
+          <p class="mt-6 text-lead text-encre">
+            Les Monts du Lyonnais forment une mosaïque rare : des prairies
+            permanentes jamais retournées, des haies bocagères qui ont survécu
+            au remembrement, des taillis de châtaigniers et, plus haut, des
+            landes à bruyère. Cette diversité fait tout. Elle donne à chaque
+            rucher une signature aromatique différente — et elle permet à nos
+            colonies de trouver à manger de mars à octobre sans avoir à
+            déménager.
+          </p>
+          <p class="mt-5 text-[1.0625rem] leading-relaxed text-encre">
+            Nous choisissons chaque emplacement selon quatre critères :
+            l'exposition au soleil du matin, l'abri contre le vent dominant, la
+            présence d'un point d'eau à moins de trois cents mètres, et
+            l'absence totale de grandes cultures traitées dans un rayon de deux
+            kilomètres. Cela limite beaucoup les possibilités. C'est voulu.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tableau des ruchers -->
+      <div class="mt-14 overflow-hidden rounded-2xl border border-cire bg-creme">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[46rem] border-collapse text-left text-[0.9375rem]">
+            <caption class="sr-only">
+              Caractéristiques des quatre ruchers principaux
+            </caption>
+            <thead>
+              <tr class="border-b border-cire bg-sable/60">
+                <th scope="col" class="px-6 py-4 font-semibold text-anthracite">Rucher</th>
+                <th scope="col" class="px-6 py-4 font-semibold text-anthracite">Altitude</th>
+                <th scope="col" class="px-6 py-4 font-semibold text-anthracite">Colonies</th>
+                <th scope="col" class="px-6 py-4 font-semibold text-anthracite">Flore dominante</th>
+                <th scope="col" class="px-6 py-4 font-semibold text-anthracite">Exposition</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                ruchers.map((r) => (
+                  <tr class="border-b border-cire/70 last:border-0 transition-colors hover:bg-sable/40">
+                    <th scope="row" class="px-6 py-4 font-display text-base font-medium text-anthracite">
+                      {r.nom}
+                    </th>
+                    <td class="px-6 py-4 tabular-nums text-encre">{r.altitude}</td>
+                    <td class="px-6 py-4 tabular-nums text-encre">{r.colonies}</td>
+                    <td class="px-6 py-4 text-encre">{r.flore}</td>
+                    <td class="px-6 py-4 text-grisdoux">{r.exposition}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-grisdoux">
+        Les cinq autres ruchers (56 colonies) accueillent l'élevage de reines et
+        les colonies de renouvellement ; ils ne sont pas ouverts au public.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============== Méthodes ============== -->
+  <section
+    id="methodes"
+    class="scroll-mt-28 bg-creme py-20 sm:py-28"
+    aria-labelledby="titre-methodes"
+  >
+    <div class="conteneur">
+      <header class="mx-auto max-w-2xl text-center">
+        <p class="surtitre surtitre-centre">Nos méthodes</p>
+        <h2
+          id="titre-methodes"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          La transparence, c'est aussi dire ce qu'on ne fait pas
+        </h2>
+        <p class="mt-5 text-lead text-encre">
+          Le mot « artisanal » ne veut plus dire grand-chose sur une étiquette.
+          Voici donc la liste complète, dans les deux sens.
+        </p>
+      </header>
+
+      <div class="mt-14 grid gap-5 lg:grid-cols-2 lg:gap-6">
+        <!-- Ce que nous faisons -->
+        <div class="rounded-2xl border border-sapin-200 bg-sapin-50 p-7 sm:p-9">
+          <h3 class="flex items-center gap-3 font-display text-h3 text-sapin-800">
+            <span
+              class="grid size-10 shrink-0 place-items-center rounded-full bg-sapin-700 text-creme"
+              aria-hidden="true"
+            >
+              <Icone nom="check" taille={20} />
+            </span>
+            Ce que nous faisons
+          </h3>
+          <ul role="list" class="mt-7 space-y-4">
+            {
+              pratiques.oui.map((item) => (
+                <li class="flex gap-3.5 text-[0.9375rem] leading-relaxed text-encre">
+                  <Icone
+                    nom="check"
+                    taille={18}
+                    classe="mt-0.5 shrink-0 text-sapin-600"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- Ce que nous ne faisons jamais -->
+        <div class="rounded-2xl border border-cire bg-sable p-7 sm:p-9">
+          <h3 class="flex items-center gap-3 font-display text-h3 text-anthracite">
+            <span
+              class="grid size-10 shrink-0 place-items-center rounded-full bg-anthracite text-creme"
+              aria-hidden="true"
+            >
+              <Icone nom="croix" taille={20} />
+            </span>
+            Ce que nous ne faisons jamais
+          </h3>
+          <ul role="list" class="mt-7 space-y-4">
+            {
+              pratiques.non.map((item) => (
+                <li class="flex gap-3.5 text-[0.9375rem] leading-relaxed text-encre">
+                  <Icone
+                    nom="croix"
+                    taille={18}
+                    classe="mt-0.5 shrink-0 text-grisdoux"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Calendrier ============== -->
+  <section
+    id="calendrier"
+    class="relative scroll-mt-28 overflow-hidden bg-sapin-900 py-20 text-creme sm:py-28"
+    aria-labelledby="titre-calendrier"
+  >
+    <div
+      class="trame-alveoles pointer-events-none absolute inset-0 opacity-[0.07]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="conteneur relative">
+      <header class="max-w-2xl">
+        <p class="surtitre text-miel-300!">Le calendrier du rucher</p>
+        <h2
+          id="titre-calendrier"
+          class="mt-5 font-display text-h2 font-medium text-creme"
+        >
+          Une année, quatre métiers différents
+        </h2>
+        <p class="mt-5 text-[1.0625rem] leading-relaxed text-creme/70">
+          L'apiculture est l'un des rares métiers où l'on ne fait presque rien
+          pendant quatre mois, puis tout en dix semaines.
+        </p>
+      </header>
+
+      <ol role="list" class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        {
+          saisons.map((saison, i) => (
+            <li class="relative flex flex-col rounded-2xl border border-creme/12 bg-creme/5 p-7">
+              <span
+                class="font-display text-5xl font-medium leading-none text-miel-500/35"
+                aria-hidden="true"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <Icone
+                nom={saison.icone}
+                taille={26}
+                epaisseur={1.4}
+                classe="mt-6 text-miel-300"
+              />
+              <p class="mt-5 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-miel-300">
+                {saison.periode}
+              </p>
+              <h3 class="mt-2 font-display text-h3 text-creme">{saison.titre}</h3>
+              <p class="mt-3.5 text-[0.9375rem] leading-relaxed text-creme/70">
+                {saison.texte}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============== Engagements chiffrés ============== -->
+  <section
+    id="engagements"
+    class="scroll-mt-28 bg-creme py-20 sm:py-28"
+    aria-labelledby="titre-engagements"
+  >
+    <div class="conteneur">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <p class="surtitre">Nos engagements</p>
+          <h2
+            id="titre-engagements"
+            class="mt-5 font-display text-h2 font-medium text-anthracite"
+          >
+            Des promesses qui se comptent
+          </h2>
+          <p class="mt-6 text-lead text-encre">
+            Un engagement qu'on ne mesure pas est une intention. Voici les six
+            indicateurs que nous suivons chaque année et que nous publions,
+            bonne ou mauvaise nouvelle.
+          </p>
+
+          <figure class="mt-10 overflow-hidden rounded-[2rem] shadow-relief">
+            <Image
+              src={rayon}
+              alt="Gros plan macro sur un rayon de cire aux alvéoles hexagonales remplies de miel ambré, parcouru par une dizaine d'abeilles."
+              widths={[400, 640, 900]}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              loading="lazy"
+              class="aspect-3/2 w-full object-cover"
+            />
+          </figure>
+        </div>
+
+        <div class="lg:col-span-7">
+          <dl class="grid gap-px overflow-hidden rounded-2xl border border-cire bg-cire sm:grid-cols-2">
+            {
+              engagements.map((e) => (
+                <div class="bg-creme p-7 sm:p-8">
+                  <dt class="font-display text-4xl font-medium leading-none text-miel-600">
+                    {e.valeur}
+                  </dt>
+                  <dd class="mt-3 text-[0.9375rem] leading-relaxed text-encre">
+                    {e.libelle}
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <div
+            class="mt-6 flex flex-col gap-4 rounded-2xl bg-sable p-7 sm:flex-row sm:items-center sm:gap-6"
+          >
+            <Icone
+              nom="balance"
+              taille={34}
+              epaisseur={1.3}
+              classe="shrink-0 text-miel-600"
+            />
+            <p class="text-[0.9375rem] leading-relaxed text-encre">
+              <strong class="font-semibold text-anthracite">
+                Notre bilan carbone 2025 :
+              </strong>
+              1,9 tonne d'équivalent CO₂ pour l'exploitation entière, dont 61 %
+              liés aux déplacements. Nous avons remplacé l'utilitaire diesel par
+              un véhicule électrique rechargé sur notre toiture photovoltaïque
+              en mars 2026.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <BandeauCTA
+    surtitre="Venez vérifier par vous-même"
+    titre="La meilleure visite, c'est la vôtre"
+    texte="Nous ouvrons une ruche devant vous, d'avril à septembre, le mercredi et le samedi. Une heure et quart pour comprendre pourquoi nous travaillons comme ça."
+    lienPrincipal={{ libelle: "Réserver une visite", href: "/ateliers-parrainages#ateliers" }}
+    lienSecondaire={{ libelle: "Voir nos miels", href: "/nos-produits" }}
+  />
+</BaseLayout>

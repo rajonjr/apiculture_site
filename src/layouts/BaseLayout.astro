@@ -1,0 +1,154 @@
+---
+import "../styles/global.css";
+import Entete from "../components/Entete.astro";
+import PiedDePage from "../components/PiedDePage.astro";
+import { site } from "../data/site";
+
+interface Props {
+  titre: string;
+  description: string;
+  /** Image de partage (Open Graph), chemin absolu depuis /public. */
+  imagePartage?: string;
+  /** Données structurées supplémentaires (JSON-LD). */
+  donneesStructurees?: Record<string, unknown> | Record<string, unknown>[];
+  /** Pages utilitaires (404, confirmation) : exclues de l'index des moteurs. */
+  noindex?: boolean;
+}
+
+const {
+  titre,
+  description,
+  imagePartage = "/og-rucher-hautes-bruyeres.jpg",
+  donneesStructurees,
+  noindex = false,
+} = Astro.props;
+
+const titreComplet = `${titre} · ${site.nom}`;
+const canonique = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const urlImage = new URL(imagePartage, Astro.site ?? site.url).href;
+
+/* Données structurées de base : présentes sur toutes les pages. */
+const organisation = {
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "FoodEstablishment"],
+  "@id": `${site.url}/#organisation`,
+  name: site.nom,
+  description: site.descriptionCourte,
+  url: site.url,
+  telephone: site.contact.telephone,
+  email: site.contact.email,
+  priceRange: "€€",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.contact.adresse.ligne2,
+    addressLocality: site.contact.adresse.ville,
+    postalCode: site.contact.adresse.codePostal,
+    addressCountry: "FR",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: site.contact.coordonnees.lat,
+    longitude: site.contact.coordonnees.lon,
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Wednesday", "Thursday", "Friday"],
+      opens: "09:30",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday"],
+      opens: "09:00",
+      closes: "13:00",
+    },
+  ],
+  sameAs: site.reseaux.map((r) => r.url),
+};
+
+const jsonLd = [
+  organisation,
+  ...(Array.isArray(donneesStructurees)
+    ? donneesStructurees
+    : donneesStructurees
+      ? [donneesStructurees]
+      : []),
+];
+---
+
+<!doctype html>
+<html lang="fr" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{titreComplet}</title>
+    <meta name="description" content={description} />
+    {noindex
+      ? <meta name="robots" content="noindex, follow" />
+      : <link rel="canonical" href={canonique} />}
+
+    <!-- Préchargement des polices critiques (évite le FOUT sur le titre H1) -->
+    <link
+      rel="preload"
+      href="/fonts/fraunces-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/inter-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Identité visuelle -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#fbf7ef" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / réseaux sociaux -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.nom} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={titreComplet} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:image" content={urlImage} />
+    <meta property="og:image:alt" content={`${site.nom} — ${titre}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Référencement local -->
+    <meta name="geo.region" content="FR-69" />
+    <meta name="geo.placename" content={site.contact.adresse.ville} />
+    <meta name="author" content={site.nom} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+
+  <body class="min-h-screen antialiased">
+    <a
+      href="#contenu"
+      class="sr-only rounded-full bg-sapin-700 px-5 py-3 font-semibold text-creme focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100]"
+    >
+      Aller au contenu principal
+    </a>
+
+    <Entete />
+
+    <main id="contenu">
+      <slot />
+    </main>
+
+    <PiedDePage />
+  </body>
+</html>

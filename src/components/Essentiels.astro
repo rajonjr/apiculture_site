@@ -1,0 +1,288 @@
+---
+import { Image } from "astro:assets";
+import Icone from "./Icone.astro";
+import atelierImg from "../assets/images/atelier-pedagogique.jpg";
+import { produits, prixDepuis, formaterPrix } from "../data/produits";
+import { ateliers } from "../data/ateliers";
+
+/* Les trois miels mis en vitrine + le coffret d'initiation. */
+const slugsVitrine = ["miel-acacia", "miel-chataignier", "miel-tilleul"];
+const miels = slugsVitrine
+  .map((slug) => produits.find((p) => p.slug === slug)!)
+  .filter(Boolean);
+
+const coffret = produits.find((p) => p.slug === "coffret-decouverte")!;
+const atelier = ateliers.find((a) => a.slug === "une-heure-dans-la-ruche")!;
+---
+
+<!-- =====================================================================
+     SECTION « LES ESSENTIELS »
+     Grille « bento » mobile-first :
+       base  → 1 colonne
+       sm    → 2 colonnes
+       lg    → 6 colonnes (3 miels sur 2 col. + atelier sur 4 + coffret sur 2)
+     ===================================================================== -->
+<section
+  id="les-essentiels"
+  class="relative scroll-mt-28 bg-sable py-20 sm:py-28 lg:py-32"
+  aria-labelledby="titre-essentiels"
+>
+  <div
+    class="trame-alveoles pointer-events-none absolute inset-x-0 top-0 h-64 opacity-40 [mask-image:linear-gradient(#000,transparent)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="conteneur relative">
+    <!-- ============== En-tête de section ============== -->
+    <header
+      class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12"
+    >
+      <div class="max-w-2xl">
+        <p class="surtitre">Les essentiels</p>
+        <h2
+          id="titre-essentiels"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Ce qu'il faut avoir goûté au moins une fois
+        </h2>
+        <p class="mt-5 max-w-xl text-lead text-encre">
+          Trois miels qui résument notre année, un coffret pour les découvrir
+          tous, et la visite qui change définitivement la façon dont on regarde
+          une abeille.
+        </p>
+      </div>
+
+      <a href="/nos-produits" class="lien-souligne shrink-0 self-start md:self-auto">
+        Voir tout le catalogue
+        <Icone nom="fleche-droite" taille={17} />
+      </a>
+    </header>
+
+    <!-- ============== Grille bento ============== -->
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-6 lg:gap-6">
+      <!-- ---------- Cartes miel ---------- -->
+      {
+        miels.map((miel) => {
+          const prix = prixDepuis(miel);
+          return (
+            <article class="carte group lg:col-span-2">
+              {/* Nuancier : la couleur réelle du miel, en dégradé. Aucune image. */}
+              <div
+                class="relative h-40 overflow-hidden sm:h-44"
+                style={`background-image: radial-gradient(120% 130% at 28% 18%, ${miel.teinte?.clair} 0%, ${miel.teinte?.fonce} 78%);`}
+              >
+                <div
+                  class="trame-alveoles-fine absolute inset-0 opacity-25 mix-blend-overlay transition-transform duration-700 group-hover:scale-110"
+                  aria-hidden="true"
+                />
+                {/* Goutte de miel en relief */}
+                <div
+                  class="absolute -bottom-10 -right-6 size-32 rounded-full bg-white/18 blur-xl"
+                  aria-hidden="true"
+                />
+                {miel.etiquette && (
+                  <span
+                    class={`etiquette absolute left-4 top-4 etiquette-${miel.etiquette.ton}`}
+                  >
+                    {miel.etiquette.texte}
+                  </span>
+                )}
+                <span class="absolute bottom-4 right-4 text-white/85">
+                  <Icone nom="pot-miel" taille={26} epaisseur={1.3} />
+                </span>
+              </div>
+
+              <div class="flex flex-1 flex-col p-6">
+                <h3 class="font-display text-h3 text-anthracite">
+                  <a
+                    href={`/nos-produits#${miel.slug}`}
+                    class="carte-lien rounded-sm transition-colors group-hover:text-miel-700"
+                  >
+                    {miel.nom}
+                  </a>
+                </h3>
+
+                <p class="mt-2.5 text-[0.9375rem] leading-relaxed text-grisdoux">
+                  {miel.accroche}
+                </p>
+
+                {miel.notesDegustation && (
+                  <ul role="list" class="mt-5 flex flex-wrap gap-1.5">
+                    {miel.notesDegustation.slice(0, 3).map((note) => (
+                      <li class="rounded-full bg-sable px-2.5 py-1 text-[0.6875rem] font-medium tracking-wide text-encre">
+                        {note}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <div
+                  class="mt-6 flex items-center justify-between border-t border-cire pt-4"
+                >
+                  <p class="text-sm text-grisdoux">
+                    dès
+                    <span class="ml-1 font-display text-lg font-medium text-anthracite">
+                      {prix !== null ? formaterPrix(prix) : "—"}
+                    </span>
+                  </p>
+                  <span
+                    class="grid size-9 place-items-center rounded-full bg-sable text-encre transition-colors duration-300 group-hover:bg-sapin-700 group-hover:text-creme"
+                    aria-hidden="true"
+                  >
+                    <Icone nom="fleche-droite" taille={16} />
+                  </span>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+
+      <!-- ---------- Carte atelier (large, avec photographie) ---------- -->
+      <article
+        class="carte group overflow-hidden sm:col-span-2 lg:col-span-4 lg:grid lg:grid-cols-2 lg:items-stretch"
+      >
+        <div class="relative overflow-hidden lg:order-last lg:h-full">
+          <Image
+            src={atelierImg}
+            alt="Un apiculteur présente un cadre couvert d'abeilles à un petit groupe d'enfants et d'adultes portant des voiles de protection."
+            widths={[400, 640, 900]}
+            sizes="(min-width: 1024px) 32vw, (min-width: 640px) 90vw, 100vw"
+            loading="lazy"
+            class="h-56 w-full object-cover transition-transform duration-700 group-hover:scale-105 lg:h-full lg:min-h-[21rem]"
+          />
+          <span class="etiquette etiquette-miel absolute left-4 top-4">
+            {atelier.etiquette?.texte}
+          </span>
+        </div>
+
+        <div class="flex flex-col justify-center p-6 sm:p-8">
+          <p class="surtitre text-sapin-600!">Atelier</p>
+
+          <h3 class="mt-4 font-display text-h3 text-anthracite">
+            <a
+              href="/ateliers-parrainages#ateliers"
+              class="carte-lien rounded-sm transition-colors group-hover:text-miel-700"
+            >
+              {atelier.nom}
+            </a>
+          </h3>
+
+          <p class="mt-3 text-[0.9375rem] leading-relaxed text-grisdoux">
+            Nous ouvrons une ruche devant vous. Vous verrez la reine, le couvain,
+            les réserves — et vous entendrez le bruit d'une colonie qui va bien.
+          </p>
+
+          <dl class="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 text-sm">
+            <div class="flex items-center gap-2.5">
+              <Icone nom="horloge" taille={17} classe="shrink-0 text-miel-600" />
+              <div>
+                <dt class="sr-only">Durée</dt>
+                <dd class="font-medium text-anthracite">{atelier.duree}</dd>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <Icone nom="utilisateurs" taille={17} classe="shrink-0 text-miel-600" />
+              <div>
+                <dt class="sr-only">Public</dt>
+                <dd class="font-medium text-anthracite">Dès 6 ans</dd>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <Icone nom="calendrier" taille={17} classe="shrink-0 text-miel-600" />
+              <div>
+                <dt class="sr-only">Saison</dt>
+                <dd class="font-medium text-anthracite">Avril → septembre</dd>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <Icone nom="etoile" taille={17} classe="shrink-0 text-miel-600" />
+              <div>
+                <dt class="sr-only">Tarif</dt>
+                <dd class="font-medium text-anthracite">{atelier.tarif}</dd>
+              </div>
+            </div>
+          </dl>
+
+          <p
+            class="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-anthracite"
+          >
+            Réserver une visite
+            <Icone
+              nom="fleche-droite"
+              taille={16}
+              classe="text-miel-600 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </p>
+        </div>
+      </article>
+
+      <!-- ---------- Carte coffret ---------- -->
+      <article
+        class="carte group relative overflow-hidden sm:col-span-2 lg:col-span-2"
+      >
+        <div
+          class="absolute inset-0"
+          style={`background-image: radial-gradient(130% 100% at 75% 0%, ${coffret.teinte?.clair} 0%, ${coffret.teinte?.fonce} 85%);`}
+          aria-hidden="true"
+        >
+        </div>
+        <div
+          class="trame-alveoles-fine absolute inset-0 opacity-20 mix-blend-overlay"
+          aria-hidden="true"
+        >
+        </div>
+
+        <div class="relative flex flex-1 flex-col justify-between p-6 sm:p-7">
+          <div>
+            <span
+              class="grid size-11 place-items-center rounded-xl bg-white/25 text-white backdrop-blur-sm"
+              aria-hidden="true"
+            >
+              <Icone nom="cadeau" taille={21} />
+            </span>
+
+            <h3 class="mt-5 font-display text-h3 text-white drop-shadow-sm">
+              <a
+                href={`/nos-produits#${coffret.slug}`}
+                class="carte-lien rounded-sm"
+              >
+                Coffret découverte
+              </a>
+            </h3>
+
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-white/90">
+              Quatre miels de 125 g et leur fiche de dégustation, dans un étui en
+              carton recyclé. Le meilleur moyen de trouver son préféré.
+            </p>
+          </div>
+
+          <div
+            class="mt-8 flex items-center justify-between border-t border-white/25 pt-4"
+          >
+            <p class="font-display text-xl font-medium text-white">
+              {formaterPrix(29)}
+            </p>
+            <span
+              class="grid size-9 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition-colors duration-300 group-hover:bg-white group-hover:text-anthracite"
+              aria-hidden="true"
+            >
+              <Icone nom="fleche-droite" taille={16} />
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Mention vitrine → e-commerce -->
+    <p
+      class="mt-10 flex flex-wrap items-center justify-center gap-2 text-center text-sm text-grisdoux"
+    >
+      <Icone nom="info" taille={16} classe="text-miel-600" />
+      La vente en ligne arrive au printemps 2027. En attendant, commandez par
+      <a href="/contact" class="lien-souligne text-sm!">téléphone ou e-mail</a>
+      — ou passez nous voir à la miellerie.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,197 @@
+---
+import Logo from "./Logo.astro";
+import Icone from "./Icone.astro";
+import { navigation, site } from "../data/site";
+
+const chemin = Astro.url.pathname.replace(/\/$/, "") || "/";
+const estActif = (href: string) =>
+  href === "/" ? chemin === "/" : chemin.startsWith(href);
+---
+
+<!-- Bandeau d'annonce saisonnière -->
+<div
+  class="relative z-50 bg-sapin-800 text-creme sans-impression"
+  role="region"
+  aria-label="Informations du moment"
+>
+  <div
+    class="conteneur flex flex-wrap items-center justify-center gap-x-6 gap-y-1 py-2 text-center text-[0.8125rem]"
+  >
+    <p class="flex items-center gap-2">
+      <Icone nom="goutte" taille={15} classe="text-miel-300" />
+      <span>La récolte de <strong class="font-semibold">tilleul 2026</strong> est arrivée à la boutique</span>
+    </p>
+    <p class="hidden items-center gap-2 text-creme/70 sm:flex">
+      <Icone nom="horloge" taille={15} />
+      <span>Boutique ouverte du mercredi au samedi</span>
+    </p>
+  </div>
+</div>
+
+<header
+  id="entete"
+  class="sticky top-0 z-40 border-b border-transparent bg-creme/80 backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 sans-impression"
+  data-entete
+>
+  <nav class="conteneur" aria-label="Navigation principale">
+    <div class="flex items-center justify-between gap-6 py-3.5 lg:py-4">
+      <a
+        href="/"
+        class="rounded-lg transition-opacity hover:opacity-80"
+        aria-label={`${site.nom} — retour à l'accueil`}
+      >
+        <Logo />
+      </a>
+
+      <!-- Navigation bureau -->
+      <ul role="list" class="hidden items-center gap-1 lg:flex">
+        {
+          navigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={estActif(item.href) ? "page" : undefined}
+                class:list={[
+                  "relative inline-block rounded-full px-4 py-2 text-[0.9375rem] font-medium transition-colors duration-200",
+                  estActif(item.href)
+                    ? "text-anthracite"
+                    : "text-encre hover:text-anthracite",
+                ]}
+              >
+                {item.libelle}
+                {estActif(item.href) && (
+                  <span
+                    class="absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-miel-500"
+                    aria-hidden="true"
+                  />
+                )}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="flex items-center gap-2.5">
+        <a
+          href={`tel:${site.contact.telephone.replace(/\s/g, "")}`}
+          class="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-encre transition-colors hover:text-miel-700 xl:inline-flex"
+        >
+          <Icone nom="telephone" taille={16} />
+          <span>{site.contact.telephoneAffiche}</span>
+        </a>
+
+        <a href="/nos-produits" class="btn btn-primaire hidden px-5! py-3! sm:inline-flex">
+          <span>Voir les miels</span>
+          <Icone nom="fleche-droite" taille={16} />
+        </a>
+
+        <!-- Bouton menu mobile -->
+        <button
+          type="button"
+          class="inline-flex size-11 items-center justify-center rounded-full border border-anthracite/15 text-anthracite transition-colors hover:bg-anthracite hover:text-creme lg:hidden"
+          aria-expanded="false"
+          aria-controls="menu-mobile"
+          data-bascule-menu
+        >
+          <span class="sr-only">Ouvrir le menu de navigation</span>
+          <Icone nom="menu" taille={20} classe="[[aria-expanded=true]_&]:hidden" />
+          <Icone nom="croix" taille={20} classe="hidden [[aria-expanded=true]_&]:block" />
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Panneau mobile -->
+  <div
+    id="menu-mobile"
+    hidden
+    class="border-t border-cire bg-creme lg:hidden"
+    data-panneau-menu
+  >
+    <div class="conteneur py-6">
+      <ul role="list" class="flex flex-col gap-1">
+        {
+          navigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={estActif(item.href) ? "page" : undefined}
+                class:list={[
+                  "flex items-center justify-between rounded-xl px-4 py-3.5 font-display text-xl transition-colors",
+                  estActif(item.href)
+                    ? "bg-sable text-anthracite"
+                    : "text-encre hover:bg-sable/70",
+                ]}
+              >
+                {item.libelle}
+                <Icone nom="fleche-droite" taille={18} classe="text-miel-600" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-6 flex flex-col gap-3 border-t border-cire pt-6">
+        <a href="/nos-produits" class="btn btn-primaire w-full">
+          Découvrir nos miels
+          <Icone nom="fleche-droite" taille={16} />
+        </a>
+        <a
+          href={`tel:${site.contact.telephone.replace(/\s/g, "")}`}
+          class="btn btn-secondaire w-full"
+        >
+          <Icone nom="telephone" taille={16} />
+          {site.contact.telephoneAffiche}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Menu mobile — amélioration progressive : sans JS, la navigation reste
+  // accessible via le pied de page et le plan du site.
+  const bascule = document.querySelector<HTMLButtonElement>("[data-bascule-menu]");
+  const panneau = document.querySelector<HTMLElement>("[data-panneau-menu]");
+
+  if (bascule && panneau) {
+    bascule.addEventListener("click", () => {
+      const ouvert = bascule.getAttribute("aria-expanded") === "true";
+      bascule.setAttribute("aria-expanded", String(!ouvert));
+      panneau.hidden = ouvert;
+      document.documentElement.style.overflow = ouvert ? "" : "hidden";
+    });
+
+    // Fermeture à la touche Échap
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && bascule.getAttribute("aria-expanded") === "true") {
+        bascule.click();
+        bascule.focus();
+      }
+    });
+
+    // Fermeture si l'on repasse en affichage bureau
+    const mq = window.matchMedia("(min-width: 1024px)");
+    mq.addEventListener("change", (e) => {
+      if (e.matches && bascule.getAttribute("aria-expanded") === "true") {
+        bascule.click();
+      }
+    });
+  }
+
+  // Ombre portée de l'en-tête au défilement
+  const entete = document.querySelector<HTMLElement>("[data-entete]");
+  if (entete) {
+    const sentinelle = document.createElement("div");
+    sentinelle.setAttribute("aria-hidden", "true");
+    entete.parentElement?.insertBefore(sentinelle, entete);
+
+    new IntersectionObserver(
+      ([entree]) => {
+        entete.classList.toggle("border-cire!", !entree.isIntersecting);
+        entete.classList.toggle("shadow-douce", !entree.isIntersecting);
+      },
+      { rootMargin: "0px" },
+    ).observe(sentinelle);
+  }
+</script>

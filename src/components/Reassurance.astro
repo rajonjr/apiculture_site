@@ -1,0 +1,99 @@
+---
+import Icone from "./Icone.astro";
+
+const piliers = [
+  {
+    icone: "feuille",
+    titre: "100 % naturel",
+    accroche: "Rien n'entre, rien ne sort.",
+    texte:
+      "Aucun additif, aucun arôme, aucun sucre ajouté. Un seul filtrage sur grille large pour retirer les morceaux de cire — tout le reste (pollens, enzymes, grains de propolis) reste dans le pot.",
+    detail: "Certifié Agriculture Biologique · FR-BIO-01",
+  },
+  {
+    icone: "localisation",
+    titre: "Récolte locale",
+    accroche: "Neuf ruchers, quinze kilomètres.",
+    texte:
+      "Nos colonies ne voyagent pas. Elles restent toute l'année sur les mêmes coteaux, ce qui leur évite le stress de la transhumance et vous garantit un miel dont vous pouvez voir le paysage depuis la miellerie.",
+    detail: "Monts du Lyonnais · altitude 620 à 840 m",
+  },
+  {
+    icone: "flocon",
+    titre: "Extraction à froid",
+    accroche: "Jamais au-dessus de 35 °C.",
+    texte:
+      "La température d'une ruche en été. Au-delà, les enzymes du miel se dégradent et les arômes s'évaporent. Nous n'utilisons donc ni pasteurisateur, ni fondoir chaud, ni filtration sous pression.",
+    detail: "Extraction manuelle · maturation 21 jours",
+  },
+] as const;
+---
+
+<!-- =====================================================================
+     SECTION RÉASSURANCE — 3 piliers
+     ===================================================================== -->
+<section
+  class="relative overflow-hidden bg-sapin-900 py-20 text-creme sm:py-24"
+  aria-labelledby="titre-reassurance"
+>
+  <div
+    class="trame-alveoles pointer-events-none absolute inset-0 opacity-[0.08]"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute left-1/2 top-0 h-80 w-[48rem] -translate-x-1/2 rounded-full bg-miel-500/12 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="conteneur relative">
+    <header class="mx-auto max-w-2xl text-center">
+      <p class="surtitre surtitre-centre text-miel-300!">Nos garanties</p>
+      <h2
+        id="titre-reassurance"
+        class="mt-5 font-display text-h2 font-medium text-creme"
+      >
+        Trois promesses, vérifiables
+      </h2>
+      <p class="mt-4 text-[1.0625rem] leading-relaxed text-creme/70">
+        Chaque pot porte un numéro de lot. Donnez-le-nous et nous vous dirons
+        quel rucher, quelle semaine, quelle floraison.
+      </p>
+    </header>
+
+    <ul role="list" class="mt-14 grid gap-px overflow-hidden rounded-3xl bg-creme/12 md:grid-cols-3">
+      {
+        piliers.map((pilier) => (
+          <li class="group relative flex flex-col bg-sapin-900 p-8 transition-colors duration-500 hover:bg-sapin-800 sm:p-10">
+            {/* Icône dans un hexagone */}
+            <div class="relative mb-7 inline-flex size-16 items-center justify-center">
+              <span
+                class="masque-hexagone absolute inset-0 bg-miel-500/15 transition-colors duration-500 group-hover:bg-miel-500/25"
+                aria-hidden="true"
+              />
+              <Icone
+                nom={pilier.icone}
+                taille={28}
+                epaisseur={1.4}
+                classe="relative text-miel-300"
+              />
+            </div>
+
+            <h3 class="font-display text-h3 text-creme">{pilier.titre}</h3>
+            <p class="mt-2 text-[0.9375rem] font-medium text-miel-300">
+              {pilier.accroche}
+            </p>
+            <p class="mt-4 flex-1 text-[0.9375rem] leading-relaxed text-creme/70">
+              {pilier.texte}
+            </p>
+
+            <p class="mt-7 border-t border-creme/12 pt-4 text-[0.75rem] font-medium uppercase tracking-[0.1em] text-creme/50">
+              {pilier.detail}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

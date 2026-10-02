@@ -1,0 +1,868 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EnteteDePage from "../components/EnteteDePage.astro";
+import Icone from "../components/Icone.astro";
+import { site, formulaires } from "../data/site";
+
+const telBrut = site.contact.telephone.replace(/\s/g, "");
+const { lat, lon } = site.contact.coordonnees;
+const adresseComplete = `${site.contact.adresse.ligne2}, ${site.contact.adresse.codePostal} ${site.contact.adresse.ville}`;
+
+const objetsDemande = [
+  { valeur: "commande", libelle: "Passer une commande de produits" },
+  { valeur: "atelier", libelle: "Réserver un atelier ou une visite" },
+  { valeur: "scolaire", libelle: "Projet scolaire ou périscolaire" },
+  { valeur: "parrainage", libelle: "Parrainer une ruche (particulier)" },
+  { valeur: "entreprise", libelle: "Offre entreprise, RSE ou séminaire" },
+  { valeur: "revendeur", libelle: "Devenir revendeur (épicerie, restaurant)" },
+  { valeur: "essaim", libelle: "Signaler un essaim" },
+  { valeur: "presse", libelle: "Presse, école d'apiculture, autre" },
+];
+
+const pointsDeVente = [
+  {
+    nom: "La Cave aux Fromages",
+    type: "Fromagerie",
+    ville: "Lyon 6e — 14 rue Boileau",
+    produits: "Miels, pain d'épices",
+  },
+  {
+    nom: "Épicerie Le Garde-Manger",
+    type: "Épicerie fine",
+    ville: "Saint-Étienne — 3 place Jean Jaurès",
+    produits: "Gamme complète",
+  },
+  {
+    nom: "Les Halles de Saint-Martin",
+    type: "Halle paysanne",
+    ville: "Saint-Martin-en-Haut — place du Marché",
+    produits: "Gamme complète, coffrets",
+  },
+  {
+    nom: "Biocoop Les Monts",
+    type: "Magasin bio",
+    ville: "Brignais — ZA des Vallières",
+    produits: "Miels 500 g, pollen",
+  },
+  {
+    nom: "Restaurant La Table du Pilat",
+    type: "Restaurant",
+    ville: "Saint-Chamond — 8 rue Victor Hugo",
+    produits: "Carte des desserts",
+  },
+  {
+    nom: "Ferme des Quatre Vents",
+    type: "Vente directe",
+    ville: "Yzeron — route du Col",
+    produits: "Miels, bougies",
+  },
+];
+
+const marches = [
+  { jour: "Mercredi matin", lieu: "Marché de Saint-Martin-en-Haut", horaire: "8h – 12h30", saison: "Toute l'année" },
+  { jour: "Samedi matin", lieu: "Marché de la Croix-Rousse, Lyon 4e", horaire: "7h – 13h30", saison: "De mars à décembre" },
+  { jour: "1er dimanche du mois", lieu: "Marché paysan de Brignais", horaire: "9h – 13h", saison: "Toute l'année" },
+];
+
+const donneesStructurees = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact & accès — Rucher des Hautes Bruyères",
+  description: `Coordonnées, horaires et accès à la miellerie du ${site.nom}, à ${site.contact.adresse.ville}.`,
+};
+---
+
+<BaseLayout
+  titre="Contact & accès"
+  description="Contactez le Rucher des Hautes Bruyères : formulaire, téléphone, horaires de la boutique à Saint-Martin-en-Haut, accès à la miellerie, points de vente partenaires et marchés."
+  donneesStructurees={donneesStructurees}
+>
+  <EnteteDePage
+    surtitre="Nous joindre"
+    titre="Écrivez-nous, passez nous voir"
+    intro="Nous répondons sous 48 heures ouvrées — un peu plus lentement en juin, quand les hausses sont pleines. Pour une commande urgente ou un signalement d'essaim, le téléphone reste le plus rapide."
+    filAriane={[{ libelle: "Accueil", href: "/" }, { libelle: "Contact & accès" }]}
+  />
+
+  <!-- ============== Accès rapides ============== -->
+  <section class="bg-creme pb-14" aria-label="Moyens de contact rapides">
+    <div class="conteneur">
+      <ul role="list" class="grid gap-4 sm:grid-cols-3">
+        <li>
+          <a
+            href={`tel:${telBrut}`}
+            class="carte group h-full flex-row items-center gap-4 p-6"
+          >
+            <span
+              class="grid size-12 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700 transition-colors group-hover:bg-miel-500 group-hover:text-white"
+              aria-hidden="true"
+            >
+              <Icone nom="telephone" taille={22} />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-grisdoux">
+                Téléphone
+              </span>
+              <span class="mt-1 block font-display text-lg text-anthracite">
+                {site.contact.telephoneAffiche}
+              </span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a
+            href={`mailto:${site.contact.email}`}
+            class="carte group h-full flex-row items-center gap-4 p-6"
+          >
+            <span
+              class="grid size-12 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700 transition-colors group-hover:bg-miel-500 group-hover:text-white"
+              aria-hidden="true"
+            >
+              <Icone nom="enveloppe" taille={22} />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-grisdoux">
+                E-mail
+              </span>
+              <span class="mt-1 block break-all font-display text-lg text-anthracite">
+                {site.contact.email}
+              </span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#acces" class="carte group h-full flex-row items-center gap-4 p-6">
+            <span
+              class="grid size-12 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700 transition-colors group-hover:bg-miel-500 group-hover:text-white"
+              aria-hidden="true"
+            >
+              <Icone nom="localisation" taille={22} />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-grisdoux">
+                La miellerie
+              </span>
+              <span class="mt-1 block font-display text-lg text-anthracite">
+                {site.contact.adresse.ville}
+              </span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== Formulaire + infos ============== -->
+  <section class="bg-creme pb-20 sm:pb-28" aria-labelledby="titre-formulaire">
+    <div class="conteneur grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <!-- Formulaire -->
+      <div class="lg:col-span-7">
+        <h2
+          id="titre-formulaire"
+          class="font-display text-h2 font-medium text-anthracite"
+        >
+          Un message, une question
+        </h2>
+        <p class="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-encre">
+          Plus vous êtes précis, plus notre réponse sera utile. Les champs
+          marqués d'un astérisque sont obligatoires.
+        </p>
+
+        <form
+          class="mt-10 grid gap-5 sm:grid-cols-2"
+          method="post"
+          action={formulaires.endpoint || formulaires.pageConfirmation}
+          name="contact"
+          data-endpoint={formulaires.endpoint}
+          data-confirmation={formulaires.pageConfirmation}
+          novalidate
+          data-formulaire-contact
+        >
+          <!-- Pot de miel anti-robots : invisible pour les humains -->
+          <div class="hidden" aria-hidden="true">
+            <label for="site-web">Ne remplissez pas ce champ</label>
+            <input id="site-web" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <!-- Objet -->
+          <div class="sm:col-span-2">
+            <label for="objet" class="label">
+              Objet de votre demande <span class="text-miel-700" aria-hidden="true">*</span>
+            </label>
+            <select id="objet" name="objet" required class="champ">
+              <option value="">Choisissez un objet…</option>
+              {
+                objetsDemande.map((o) => (
+                  <option value={o.valeur}>{o.libelle}</option>
+                ))
+              }
+            </select>
+          </div>
+
+          <div>
+            <label for="prenom" class="label">
+              Prénom <span class="text-miel-700" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="prenom"
+              name="prenom"
+              type="text"
+              required
+              autocomplete="given-name"
+              class="champ"
+            />
+          </div>
+
+          <div>
+            <label for="nom" class="label">
+              Nom <span class="text-miel-700" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="nom"
+              name="nom"
+              type="text"
+              required
+              autocomplete="family-name"
+              class="champ"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="label">
+              E-mail <span class="text-miel-700" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="prenom@exemple.fr"
+              class="champ"
+            />
+          </div>
+
+          <div>
+            <label for="telephone" class="label">Téléphone</label>
+            <input
+              id="telephone"
+              name="telephone"
+              type="tel"
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder="06 12 34 56 78"
+              class="champ"
+            />
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="structure" class="label">
+              Structure
+              <span class="font-normal text-grisdoux">
+                (école, entreprise, commerce — si concerné)
+              </span>
+            </label>
+            <input
+              id="structure"
+              name="structure"
+              type="text"
+              autocomplete="organization"
+              class="champ"
+            />
+          </div>
+
+          <div>
+            <label for="date-souhaitee" class="label">
+              Date souhaitée
+              <span class="font-normal text-grisdoux">(atelier, visite)</span>
+            </label>
+            <input id="date-souhaitee" name="date" type="date" class="champ" />
+          </div>
+
+          <div>
+            <label for="participants" class="label">
+              Nombre de personnes
+            </label>
+            <input
+              id="participants"
+              name="participants"
+              type="number"
+              min="1"
+              max="200"
+              inputmode="numeric"
+              class="champ"
+            />
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="message" class="label">
+              Votre message <span class="text-miel-700" aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              minlength="10"
+              placeholder="Dites-nous ce dont vous avez besoin : produits et quantités, type d'atelier, âge des participants, contraintes particulières…"
+              class="champ resize-y"></textarea>
+          </div>
+
+          <!-- Consentement RGPD -->
+          <div class="sm:col-span-2">
+            <div class="flex items-start gap-3 rounded-xl bg-sable p-4">
+              <input
+                id="rgpd"
+                name="rgpd"
+                type="checkbox"
+                required
+                class="mt-1 size-4 shrink-0 rounded border-anthracite/25 accent-sapin-700"
+              />
+              <label for="rgpd" class="text-[0.875rem] leading-relaxed text-encre">
+                J'accepte que mes données soient utilisées pour traiter ma
+                demande. <span class="text-miel-700" aria-hidden="true">*</span>
+                <span class="mt-1 block text-[0.8125rem] text-grisdoux">
+                  Elles sont conservées 3 ans, hébergées en France et ne sont
+                  jamais transmises à des tiers.
+                  <a href="/mentions-legales#donnees" class="underline underline-offset-2 hover:text-miel-700">
+                    Vos droits
+                  </a>.
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <div class="flex items-start gap-3 px-4">
+              <input
+                id="infolettre"
+                name="infolettre"
+                type="checkbox"
+                class="mt-1 size-4 shrink-0 rounded border-anthracite/25 accent-sapin-700"
+              />
+              <label for="infolettre" class="text-[0.875rem] leading-relaxed text-encre">
+                Je souhaite aussi recevoir la lettre saisonnière du rucher
+                (4 envois par an).
+              </label>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <button type="submit" class="btn btn-primaire w-full sm:w-auto sm:px-9!">
+              Envoyer mon message
+              <Icone nom="fleche-droite" taille={17} />
+            </button>
+            <p class="mt-4 text-[0.8125rem] text-grisdoux">
+              Réponse sous 48 h ouvrées. En cas d'urgence,
+              <a href={`tel:${telBrut}`} class="lien-souligne text-[0.8125rem]!">
+                appelez-nous
+              </a>.
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Colonne latérale : coordonnées + horaires -->
+      <aside class="lg:col-span-5">
+        <div class="space-y-5 lg:sticky lg:top-28">
+          <!-- Coordonnées -->
+          <div class="rounded-2xl border border-cire bg-sable p-7 sm:p-8">
+            <h2 class="font-display text-h3 text-anthracite">Nous trouver</h2>
+            <address class="mt-5 space-y-4 text-[0.9375rem] not-italic leading-relaxed">
+              <p class="flex gap-3">
+                <Icone nom="localisation" taille={19} classe="mt-0.5 shrink-0 text-miel-600" />
+                <span class="text-encre">
+                  <strong class="block font-semibold text-anthracite">
+                    {site.contact.adresse.ligne1}
+                  </strong>
+                  {site.contact.adresse.ligne2}<br />
+                  {site.contact.adresse.codePostal} {site.contact.adresse.ville}<br />
+                  <span class="text-grisdoux">{site.contact.adresse.region}</span>
+                </span>
+              </p>
+              <p class="flex gap-3">
+                <Icone nom="telephone" taille={19} classe="mt-0.5 shrink-0 text-miel-600" />
+                <a href={`tel:${telBrut}`} class="text-encre transition-colors hover:text-miel-700">
+                  {site.contact.telephoneAffiche}
+                </a>
+              </p>
+              <p class="flex gap-3">
+                <Icone nom="enveloppe" taille={19} classe="mt-0.5 shrink-0 text-miel-600" />
+                <span class="min-w-0">
+                  <a
+                    href={`mailto:${site.contact.email}`}
+                    class="block break-all text-encre transition-colors hover:text-miel-700"
+                  >
+                    {site.contact.email}
+                  </a>
+                  <a
+                    href={`mailto:${site.contact.emailPro}`}
+                    class="mt-1 block break-all text-grisdoux transition-colors hover:text-miel-700"
+                  >
+                    {site.contact.emailPro} <span class="text-[0.8125rem]">(professionnels)</span>
+                  </a>
+                </span>
+              </p>
+            </address>
+          </div>
+
+          <!-- Horaires -->
+          <div class="rounded-2xl border border-cire bg-creme p-7 sm:p-8">
+            <h2 class="flex items-center gap-2.5 font-display text-h3 text-anthracite">
+              <Icone nom="horloge" taille={21} classe="text-miel-600" />
+              Horaires de la boutique
+            </h2>
+            <dl class="mt-5 space-y-0.5">
+              {
+                site.horaires.map((h) => (
+                  <div
+                    class:list={[
+                      "flex items-baseline justify-between gap-4 rounded-lg px-3 py-2.5 text-[0.9375rem]",
+                      h.ferme ? "text-grisdoux" : "odd:bg-sable/60",
+                    ]}
+                  >
+                    <dt class="font-medium">{h.jour}</dt>
+                    <dd
+                      class:list={[
+                        "text-right tabular-nums",
+                        h.ferme ? "" : "text-encre",
+                      ]}
+                    >
+                      {h.creneaux}
+                    </dd>
+                  </div>
+                ))
+              }
+            </dl>
+            <p class="mt-5 flex gap-2.5 rounded-xl bg-miel-50 p-4 text-[0.8125rem] leading-relaxed text-encre">
+              <Icone nom="info" taille={16} classe="mt-0.5 shrink-0 text-miel-700" />
+              <span>
+                Fermeture annuelle du 24 décembre au 2 janvier. En juin et
+                juillet, nous sommes souvent au rucher : un appel avant de venir
+                évite une porte close.
+              </span>
+            </p>
+          </div>
+
+          <!-- Signalement d'essaim -->
+          <div class="rounded-2xl border border-sapin-200 bg-sapin-50 p-7 sm:p-8">
+            <h2 class="flex items-center gap-2.5 font-display text-h3 text-sapin-800">
+              <Icone nom="abeille" taille={21} />
+              Un essaim chez vous ?
+            </h2>
+            <p class="mt-4 text-[0.9375rem] leading-relaxed text-encre">
+              Ne le détruisez surtout pas et ne l'aspergez de rien. Un essaim en
+              grappe est pacifique : il n'a pas de couvain à défendre. Appelez-nous,
+              nous venons gratuitement le récupérer dans un rayon de 25 km, en
+              général dans la journée.
+            </p>
+            <a href={`tel:${telBrut}`} class="btn btn-primaire mt-6 w-full">
+              <Icone nom="telephone" taille={16} />
+              Appeler maintenant
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============== Accès & carte ============== -->
+  <section
+    id="acces"
+    class="scroll-mt-28 bg-sable py-20 sm:py-28"
+    aria-labelledby="titre-acces"
+  >
+    <div class="conteneur">
+      <header class="max-w-2xl">
+        <p class="surtitre">Venir à la miellerie</p>
+        <h2
+          id="titre-acces"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Comment nous rejoindre
+        </h2>
+        <p class="mt-5 text-lead text-encre">
+          La miellerie est une ancienne grange en pierre, au bout d'un chemin
+          en terre de trois cents mètres. Le panneau en bois est discret :
+          ralentissez après le virage du lavoir.
+        </p>
+      </header>
+
+      <div class="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <!-- Carte (chargement au clic : RGPD + sobriété) -->
+        <div class="lg:col-span-7">
+          <div
+            class="relative aspect-4/3 overflow-hidden rounded-2xl border border-cire bg-creme sm:aspect-16/10"
+            data-carte
+            data-lat={lat}
+            data-lon={lon}
+          >
+            <!-- Aperçu statique avant chargement -->
+            <div
+              class="trame-alveoles absolute inset-0 opacity-50"
+              aria-hidden="true"
+            >
+            </div>
+            <div class="absolute inset-0 grid place-items-center p-7 text-center">
+              <div class="max-w-sm">
+                <span
+                  class="mx-auto grid size-14 place-items-center rounded-full bg-miel-100 text-miel-700"
+                  aria-hidden="true"
+                >
+                  <Icone nom="localisation" taille={26} />
+                </span>
+                <h3 class="mt-5 font-display text-h3 text-anthracite">
+                  Carte interactive
+                </h3>
+                <p class="mt-3 text-[0.9375rem] leading-relaxed text-grisdoux">
+                  Nous ne chargeons pas la carte automatiquement : cela
+                  économise près de 500 Ko et évite de transmettre votre
+                  adresse IP à un service tiers sans votre accord.
+                </p>
+                <button type="button" class="btn btn-primaire mt-6" data-afficher-carte>
+                  Afficher la carte OpenStreetMap
+                </button>
+                <p class="mt-4 text-[0.8125rem] text-grisdoux">
+                  Fournisseur : OpenStreetMap · données ouvertes
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-3">
+            <a
+              href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-secondaire py-3! text-sm!"
+            >
+              <Icone nom="fleche-diagonale" taille={15} />
+              Ouvrir dans OpenStreetMap
+            </a>
+            <a
+              href={`geo:${lat},${lon}?q=${encodeURIComponent(adresseComplete)}`}
+              class="btn btn-secondaire py-3! text-sm!"
+            >
+              <Icone nom="localisation" taille={15} />
+              Ouvrir dans mon GPS
+            </a>
+          </div>
+        </div>
+
+        <!-- Modes d'accès -->
+        <div class="lg:col-span-5">
+          <ul role="list" class="space-y-5">
+            {
+              ([
+                {
+                  icone: "voiture",
+                  titre: "En voiture",
+                  texte:
+                    "25 minutes depuis Lyon ouest par la D311 puis la D34. Depuis Saint-Étienne, 40 minutes par la D2. Parking gratuit sur le pré (15 places) et une borne de recharge 7 kW à disposition des clients.",
+                },
+                {
+                  icone: "utilisateurs",
+                  titre: "En transports",
+                  texte:
+                    "Car régional ligne 133 (Lyon Perrache → Saint-Martin-en-Haut), arrêt « Le Bourg », puis 1,8 km à pied par le chemin des Crêtes. Nous venons vous chercher à l'arrêt si vous prévenez la veille.",
+                },
+                {
+                  icone: "velo",
+                  titre: "À vélo",
+                  texte:
+                    "La voie verte des Monts du Lyonnais passe à 900 mètres. Arceaux et prise de recharge pour VAE devant la boutique. 5 % de remise pour toute visite à vélo — nous ne vérifions rien, on vous croit.",
+                },
+                {
+                  icone: "info",
+                  titre: "Accessibilité",
+                  texte:
+                    "Boutique, miellerie et sanitaires de plain-pied et accessibles en fauteuil. Place PMR devant l'entrée. Le rucher pédagogique est à 80 m sur chemin stabilisé : prévenez-nous, nous adaptons le parcours.",
+                },
+              ] as const).map((mode) => (
+                <li class="flex gap-5 rounded-2xl border border-cire bg-creme p-6">
+                  <span
+                    class="grid size-11 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700"
+                    aria-hidden="true"
+                  >
+                    <Icone nom={mode.icone} taille={21} />
+                  </span>
+                  <div>
+                    <h3 class="font-display text-lg text-anthracite">
+                      {mode.titre}
+                    </h3>
+                    <p class="mt-2 text-[0.9375rem] leading-relaxed text-grisdoux">
+                      {mode.texte}
+                    </p>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Points de vente ============== -->
+  <section
+    id="points-de-vente"
+    class="scroll-mt-28 bg-creme py-20 sm:py-28"
+    aria-labelledby="titre-revendeurs"
+  >
+    <div class="conteneur">
+      <header class="max-w-2xl">
+        <p class="surtitre">Où nous trouver ailleurs</p>
+        <h2
+          id="titre-revendeurs"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Nos points de vente partenaires
+        </h2>
+        <p class="mt-5 text-lead text-encre">
+          Des commerçants qui connaissent nos miels et savent en parler. La
+          gamme disponible varie d'un point de vente à l'autre : en cas de
+          doute, un appel évite un déplacement.
+        </p>
+      </header>
+
+      <ul role="list" class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          pointsDeVente.map((pv) => (
+            <li class="rounded-2xl border border-cire bg-sable p-6">
+              <span class="etiquette etiquette-neutre">{pv.type}</span>
+              <h3 class="mt-4 font-display text-lg text-anthracite">{pv.nom}</h3>
+              <p class="mt-1.5 flex items-start gap-2 text-[0.875rem] leading-relaxed text-grisdoux">
+                <Icone nom="localisation" taille={15} classe="mt-0.5 shrink-0" />
+                {pv.ville}
+              </p>
+              <p class="mt-3 border-t border-cire pt-3 text-[0.875rem] text-encre">
+                {pv.produits}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Marchés -->
+      <div class="mt-14">
+        <h2 class="font-display text-h3 font-medium text-anthracite">
+          Nos marchés hebdomadaires
+        </h2>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-cire">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[38rem] border-collapse text-left text-[0.9375rem]">
+              <caption class="sr-only">Marchés sur lesquels nous sommes présents</caption>
+              <thead>
+                <tr class="bg-sable text-[0.6875rem] uppercase tracking-[0.12em] text-grisdoux">
+                  <th scope="col" class="px-6 py-3 font-bold">Jour</th>
+                  <th scope="col" class="px-6 py-3 font-bold">Marché</th>
+                  <th scope="col" class="px-6 py-3 font-bold">Horaires</th>
+                  <th scope="col" class="px-6 py-3 font-bold">Saison</th>
+                </tr>
+              </thead>
+              <tbody class="bg-creme">
+                {
+                  marches.map((m) => (
+                    <tr class="border-t border-cire">
+                      <th scope="row" class="px-6 py-4 font-medium text-anthracite">
+                        {m.jour}
+                      </th>
+                      <td class="px-6 py-4 text-encre">{m.lieu}</td>
+                      <td class="px-6 py-4 tabular-nums text-encre">{m.horaire}</td>
+                      <td class="px-6 py-4 text-grisdoux">{m.saison}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Devenir revendeur -->
+      <div
+        id="professionnels"
+        class="mt-14 scroll-mt-28 rounded-2xl border border-sapin-200 bg-sapin-50 p-7 sm:p-10"
+      >
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+          <span
+            class="grid size-14 shrink-0 place-items-center rounded-2xl bg-sapin-700 text-creme"
+            aria-hidden="true"
+          >
+            <Icone nom="mallette" taille={26} />
+          </span>
+          <div class="flex-1">
+            <h2 class="font-display text-h3 font-medium text-anthracite">
+              Vous tenez une épicerie, une fromagerie, un restaurant ?
+            </h2>
+            <p class="mt-3 max-w-3xl leading-relaxed text-encre">
+              Nous réservons environ 900 kg par an à la vente professionnelle :
+              remise de 35 % dès 40 pots, franco de port à 250 € HT, PLV offerte
+              et livraison par nos soins dans un rayon de 60 km. Demandez le
+              tarif professionnel, nous l'envoyons par retour de mail.
+            </p>
+          </div>
+          <a
+            href={`mailto:${site.contact.emailPro}?subject=Demande%20de%20tarif%20professionnel`}
+            class="btn btn-primaire shrink-0"
+          >
+            Demander le tarif pro
+            <Icone nom="fleche-droite" taille={16} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  /* ------------------------------------------------------------------
+     Carte à la demande — sobriété numérique + conformité RGPD.
+     Tant que l'utilisateur ne clique pas, aucune requête n'est émise
+     vers OpenStreetMap et aucune adresse IP n'est transmise.
+     ------------------------------------------------------------------ */
+  const conteneurCarte = document.querySelector<HTMLElement>("[data-carte]");
+  const boutonCarte = document.querySelector<HTMLButtonElement>("[data-afficher-carte]");
+
+  boutonCarte?.addEventListener("click", () => {
+    if (!conteneurCarte) return;
+    const lat = Number(conteneurCarte.dataset.lat);
+    const lon = Number(conteneurCarte.dataset.lon);
+    const d = 0.012;
+    const bbox = [lon - d, lat - d / 1.6, lon + d, lat + d / 1.6].join("%2C");
+
+    const iframe = document.createElement("iframe");
+    iframe.src =
+      `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lon}`;
+    iframe.title = "Carte de localisation de la miellerie des Hautes Bruyères";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer";
+    iframe.className = "absolute inset-0 size-full border-0";
+
+    conteneurCarte.replaceChildren(iframe);
+  });
+
+  /* ------------------------------------------------------------------
+     Pré-remplissage du formulaire depuis les paramètres d'URL
+     (?produit=…, ?atelier=…, ?parrainage=…, ?objet=…)
+     ------------------------------------------------------------------ */
+  const formulaire = document.querySelector<HTMLFormElement>("[data-formulaire-contact]");
+  if (formulaire) {
+    const params = new URLSearchParams(window.location.search);
+    const selectObjet = formulaire.querySelector<HTMLSelectElement>("#objet");
+    const message = formulaire.querySelector<HTMLTextAreaElement>("#message");
+
+    const lisible = (v: string) => v.replace(/-/g, " ");
+
+    const correspondances: Record<string, { objet: string; texte: (v: string) => string }> = {
+      produit: {
+        objet: "commande",
+        texte: (v) => `Bonjour,\n\nJe souhaite commander : ${lisible(v)}.\nQuantité souhaitée : \n\nMerci d'avance,`,
+      },
+      atelier: {
+        objet: "atelier",
+        texte: (v) => `Bonjour,\n\nJe souhaite réserver l'atelier « ${lisible(v)} ».\nDates envisagées : \n\nMerci d'avance,`,
+      },
+      parrainage: {
+        objet: "parrainage",
+        texte: (v) => `Bonjour,\n\nJe suis intéressé(e) par la formule de parrainage « ${lisible(v)} ».\n\nMerci d'avance,`,
+      },
+    };
+
+    for (const [cle, config] of Object.entries(correspondances)) {
+      const valeur = params.get(cle);
+      if (valeur && selectObjet && message) {
+        selectObjet.value = config.objet;
+        message.value = config.texte(valeur);
+        break;
+      }
+    }
+
+    const objetDirect = params.get("objet");
+    if (objetDirect && selectObjet) {
+      const existe = [...selectObjet.options].some((o) => o.value === objetDirect);
+      if (existe) selectObjet.value = objetDirect;
+    }
+
+    /* Validation côté client : messages d'erreur en français, sous le champ. */
+    formulaire.addEventListener("submit", (e) => {
+      formulaire
+        .querySelectorAll<HTMLElement>("[data-erreur]")
+        .forEach((el) => el.remove());
+
+      const champs = [
+        ...formulaire.querySelectorAll<
+          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >("input[required], select[required], textarea[required]"),
+      ];
+
+      const invalides = champs.filter((champ) => {
+        champ.setAttribute("aria-invalid", "false");
+        if (champ.checkValidity()) return false;
+
+        champ.setAttribute("aria-invalid", "true");
+        const erreur = document.createElement("p");
+        erreur.dataset.erreur = "";
+        erreur.className = "mt-1.5 text-[0.8125rem] font-medium text-[#8a3324]";
+        erreur.textContent =
+          champ instanceof HTMLInputElement && champ.type === "checkbox"
+            ? "Merci de cocher cette case pour poursuivre."
+            : champ.validity.typeMismatch
+              ? "Le format de cette adresse e-mail semble incorrect."
+              : "Ce champ est obligatoire.";
+        champ.closest("div")?.appendChild(erreur);
+        return true;
+      });
+
+      const premierInvalide = invalides[0];
+      if (premierInvalide) {
+        e.preventDefault();
+        premierInvalide.focus();
+        premierInvalide.scrollIntoView({ block: "center", behavior: "smooth" });
+        return;
+      }
+
+      /* Envoi : si aucun point de terminaison n'est configuré, on reste en
+         mode démonstration et on redirige simplement vers la confirmation. */
+      const endpoint = formulaire.dataset.endpoint;
+      const confirmation = formulaire.dataset.confirmation || "/merci";
+      e.preventDefault();
+
+      const bouton = formulaire.querySelector<HTMLButtonElement>("button[type=submit]");
+      if (bouton) {
+        bouton.disabled = true;
+        bouton.textContent = "Envoi en cours…";
+      }
+
+      if (!endpoint) {
+        window.location.assign(confirmation);
+        return;
+      }
+
+      fetch(endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(formulaire),
+      })
+        .then((r) => {
+          if (!r.ok) throw new Error(String(r.status));
+          window.location.assign(confirmation);
+        })
+        .catch(() => {
+          if (bouton) {
+            bouton.disabled = false;
+            bouton.textContent = "Réessayer l'envoi";
+          }
+          const alerte = document.createElement("p");
+          alerte.setAttribute("role", "alert");
+          alerte.className =
+            "mt-4 rounded-xl bg-[#f6e7e4] p-4 text-[0.875rem] text-[#8a3324]";
+          alerte.textContent =
+            "L'envoi a échoué. Écrivez-nous directement à " +
+            "bonjour@rucher-hautes-bruyeres.fr ou appelez le 04 78 00 00 00.";
+          bouton?.insertAdjacentElement("afterend", alerte);
+        });
+    });
+  }
+</script>

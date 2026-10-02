@@ -1,0 +1,644 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EnteteDePage from "../components/EnteteDePage.astro";
+import BandeauCTA from "../components/BandeauCTA.astro";
+import Icone from "../components/Icone.astro";
+import atelierImg from "../assets/images/atelier-pedagogique.jpg";
+import rucheImg from "../assets/images/ruches-clairiere.jpg";
+import { ateliers, formulesParrainage, faqAteliers } from "../data/ateliers";
+import { site } from "../data/site";
+
+const parrainagesParticuliers = formulesParrainage.filter(
+  (f) => f.cible === "particulier",
+);
+const parrainagesEntreprises = formulesParrainage.filter(
+  (f) => f.cible === "entreprise",
+);
+
+const iconesFamille = {
+  particuliers: "utilisateurs",
+  scolaires: "ecole",
+  entreprises: "mallette",
+} as const;
+
+const libellesFamille = {
+  particuliers: "Particuliers & familles",
+  scolaires: "Scolaires & périscolaire",
+  entreprises: "Entreprises & collectivités",
+} as const;
+
+const donneesStructurees = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqAteliers.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.reponse },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Ateliers pédagogiques du Rucher des Hautes Bruyères",
+    itemListElement: ateliers.map((a, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Event",
+        name: a.nom,
+        description: a.accroche,
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        location: {
+          "@type": "Place",
+          name: site.nom,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: site.contact.adresse.ligne2,
+            addressLocality: site.contact.adresse.ville,
+            postalCode: site.contact.adresse.codePostal,
+            addressCountry: "FR",
+          },
+        },
+        organizer: { "@id": `${site.url}/#organisation` },
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  titre="Ateliers & parrainages"
+  description="Visites de ruchers, ateliers scolaires, séminaires d'entreprise et parrainage de ruches dans les Monts du Lyonnais. Durées, publics et tarifs indicatifs."
+  donneesStructurees={donneesStructurees}
+>
+  <EnteteDePage
+    surtitre="Transmettre"
+    titre="Ouvrir une ruche change la façon de regarder le monde"
+    intro="Depuis 2014, mille quatre cents personnes passent chaque année par nos ruchers : des classes de CM1, des équipes en séminaire, des familles du dimanche et des parrains venus voir « leur » colonie. Voici ce que nous proposons, honnêtement, avec les tarifs."
+    filAriane={[
+      { libelle: "Accueil", href: "/" },
+      { libelle: "Ateliers & parrainages" },
+    ]}
+  />
+
+  <!-- ============== Intro visuelle ============== -->
+  <section class="bg-creme pb-16 sm:pb-20" aria-label="En images">
+    <div class="conteneur">
+      <figure class="relative overflow-hidden rounded-[2rem] shadow-relief sm:rounded-[2.5rem]">
+        <Image
+          src={atelierImg}
+          alt="Un apiculteur montre un cadre couvert d'abeilles à un petit groupe d'enfants et d'adultes portant des voiles blancs, dans un verger ensoleillé."
+          widths={[640, 1024, 1536]}
+          sizes="(min-width: 1280px) 1216px, 100vw"
+          loading="eager"
+          class="aspect-16/9 w-full object-cover sm:aspect-21/9"
+        />
+        <figcaption
+          class="voile-photo absolute inset-x-0 bottom-0 p-6 text-creme sm:p-10"
+        >
+          <p class="max-w-xl text-[0.9375rem] leading-relaxed sm:text-base">
+            « Le moment préféré des enfants, c'est toujours quand on trouve la
+            reine. Il y a un silence complet, puis tout le monde parle en même
+            temps. »
+          </p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============== Les ateliers ============== -->
+  <section
+    id="ateliers"
+    class="scroll-mt-28 bg-creme pb-20 sm:pb-28"
+    aria-labelledby="titre-ateliers"
+  >
+    <div class="conteneur">
+      <header class="max-w-2xl">
+        <p class="surtitre">Nos formules</p>
+        <h2
+          id="titre-ateliers"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Cinq ateliers, cinq publics
+        </h2>
+        <p class="mt-5 text-lead text-encre">
+          Tous les ateliers sont animés par Mathieu ou Claire — jamais par un
+          saisonnier. Le matériel de protection est fourni, et les groupes
+          restent petits : nous préférons refuser du monde plutôt que faire
+          visiter à vingt-cinq.
+        </p>
+      </header>
+
+      <ul role="list" class="mt-14 grid gap-5 lg:grid-cols-2 lg:gap-6">
+        {
+          ateliers.map((atelier) => (
+            <li class="carte group p-7 sm:p-9">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <span
+                  class="grid size-12 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700"
+                  aria-hidden="true"
+                >
+                  <Icone nom={iconesFamille[atelier.famille]} taille={23} />
+                </span>
+                {atelier.etiquette && (
+                  <span class={`etiquette etiquette-${atelier.etiquette.ton}`}>
+                    {atelier.etiquette.texte}
+                  </span>
+                )}
+              </div>
+
+              <p class="mt-6 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-grisdoux">
+                {libellesFamille[atelier.famille]}
+              </p>
+              <h3 class="mt-2 font-display text-h3 font-medium text-anthracite">
+                {atelier.nom}
+              </h3>
+              <p class="mt-2 text-[1.0625rem] font-medium italic text-miel-700">
+                {atelier.accroche}
+              </p>
+              <p class="mt-4 leading-relaxed text-encre">{atelier.description}</p>
+
+              {/* Caractéristiques */}
+              <dl class="mt-7 grid gap-x-6 gap-y-4 border-y border-cire py-6 sm:grid-cols-2">
+                <div class="flex gap-3">
+                  <Icone nom="horloge" taille={17} classe="mt-0.5 shrink-0 text-miel-600" />
+                  <div>
+                    <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-grisdoux">
+                      Durée
+                    </dt>
+                    <dd class="mt-0.5 text-[0.9375rem] text-encre">{atelier.duree}</dd>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <Icone nom="utilisateurs" taille={17} classe="mt-0.5 shrink-0 text-miel-600" />
+                  <div>
+                    <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-grisdoux">
+                      Public
+                    </dt>
+                    <dd class="mt-0.5 text-[0.9375rem] text-encre">{atelier.public}</dd>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <Icone nom="hexagone" taille={17} classe="mt-0.5 shrink-0 text-miel-600" />
+                  <div>
+                    <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-grisdoux">
+                      Effectif
+                    </dt>
+                    <dd class="mt-0.5 text-[0.9375rem] text-encre">{atelier.effectif}</dd>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <Icone nom="calendrier" taille={17} classe="mt-0.5 shrink-0 text-miel-600" />
+                  <div>
+                    <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-grisdoux">
+                      Saison
+                    </dt>
+                    <dd class="mt-0.5 text-[0.9375rem] text-encre">{atelier.saison}</dd>
+                  </div>
+                </div>
+              </dl>
+
+              {/* Inclus */}
+              <p class="mt-6 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-grisdoux">
+                Compris dans le tarif
+              </p>
+              <ul role="list" class="mt-3 space-y-2.5">
+                {atelier.inclus.map((item) => (
+                  <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+                    <Icone nom="check" taille={17} classe="mt-0.5 shrink-0 text-sapin-600" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Tarif */}
+              <div class="mt-8 flex flex-wrap items-end justify-between gap-4 rounded-xl bg-sable p-5">
+                <div>
+                  <p class="font-display text-2xl font-medium text-anthracite">
+                    {atelier.tarif}
+                  </p>
+                  {atelier.tarifDetail && (
+                    <p class="mt-1 text-[0.8125rem] leading-relaxed text-grisdoux">
+                      {atelier.tarifDetail}
+                    </p>
+                  )}
+                </div>
+                <a
+                  href={`/contact?atelier=${atelier.slug}`}
+                  class="btn btn-primaire py-3! text-sm!"
+                >
+                  Réserver
+                  <Icone nom="fleche-droite" taille={15} />
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== Focus scolaires ============== -->
+  <section
+    id="scolaires"
+    class="scroll-mt-28 bg-sable py-20 sm:py-24"
+    aria-labelledby="titre-scolaires"
+  >
+    <div class="conteneur grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="surtitre">Enseignants</p>
+        <h2
+          id="titre-scolaires"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Monter un projet avec votre classe
+        </h2>
+        <p class="mt-6 text-lead text-encre">
+          L'atelier « classe buissonnière » a été conçu avec une enseignante de
+          cycle 3 et testé sur quarante classes. Il s'articule avec les
+          programmes de sciences (le vivant, les chaînes alimentaires, la
+          reproduction des plantes à fleurs) et avec l'éducation au
+          développement durable.
+        </p>
+
+        <div class="mt-9 grid gap-5 sm:grid-cols-2">
+          {
+            ([
+              {
+                icone: "ecole",
+                titre: "Cycle 2 — CP au CE2",
+                texte:
+                  "Approche sensorielle : observer, toucher la cire, sentir la propolis, goûter trois miels. Vocabulaire du vivant et premières notions de chaîne alimentaire.",
+              },
+              {
+                icone: "loupe",
+                titre: "Cycle 3 — CM1 à 6e",
+                texte:
+                  "Organisation sociale de la colonie, pollinisation, cycle de vie, et un atelier de mesure : peser une ruche, calculer un rendement.",
+              },
+              {
+                icone: "balance",
+                titre: "Cycle 4 — 5e à 3e",
+                texte:
+                  "Biodiversité et services écosystémiques, effets des pesticides, enjeux économiques de la pollinisation. Débat argumenté en fin de séance.",
+              },
+              {
+                icone: "feuille",
+                titre: "Projet annuel",
+                texte:
+                  "Installation d'une ruche pédagogique dans votre établissement, avec trois interventions par an et un suivi photographique de la colonie.",
+              },
+            ] as const).map((bloc) => (
+              <div class="rounded-2xl border border-cire bg-creme p-6">
+                <Icone nom={bloc.icone} taille={22} classe="text-miel-600" />
+                <h3 class="mt-4 font-display text-lg text-anthracite">
+                  {bloc.titre}
+                </h3>
+                <p class="mt-2 text-[0.9375rem] leading-relaxed text-grisdoux">
+                  {bloc.texte}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <aside class="lg:col-span-5">
+        <div class="rounded-2xl border border-cire bg-creme p-7 sm:p-9 lg:sticky lg:top-28">
+          <h3 class="font-display text-h3 text-anthracite">
+            Informations pratiques
+          </h3>
+          <dl class="mt-7 space-y-5 text-[0.9375rem]">
+            {
+              [
+                { k: "Tarif", v: "190 € par classe (jusqu'à 30 élèves)" },
+                { k: "Déplacement", v: "+ 60 € dans un rayon de 40 km" },
+                { k: "Encadrement requis", v: "2 adultes accompagnateurs minimum" },
+                { k: "Délai de réservation", v: "3 semaines minimum" },
+                { k: "Règlement", v: "Mandat administratif, chèque ou virement" },
+                { k: "Assurance", v: "RC professionnelle fournie sur demande" },
+              ].map((l) => (
+                <div class="flex items-baseline justify-between gap-5 border-b border-cire pb-4 last:border-0 last:pb-0">
+                  <dt class="text-grisdoux">{l.k}</dt>
+                  <dd class="shrink-0 text-right font-medium text-anthracite">
+                    {l.v}
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <a href="/contact?objet=scolaire" class="btn btn-primaire mt-8 w-full">
+            Demander un devis scolaire
+            <Icone nom="fleche-droite" taille={16} />
+          </a>
+          <p class="mt-4 text-center text-[0.8125rem] text-grisdoux">
+            Le dossier pédagogique vous est envoyé dès la confirmation.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============== Parrainage ============== -->
+  <section
+    id="parrainage"
+    class="relative scroll-mt-28 overflow-hidden bg-creme py-20 sm:py-28"
+    aria-labelledby="titre-parrainage"
+  >
+    <div
+      class="lueur-miel pointer-events-none absolute inset-x-0 top-0 h-96"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="conteneur relative">
+      <header class="mx-auto max-w-3xl text-center">
+        <p class="surtitre surtitre-centre">Parrainage de ruches</p>
+        <h2
+          id="titre-parrainage"
+          class="mt-5 font-display text-h2 font-medium text-anthracite"
+        >
+          Adoptez une colonie, recevez son miel
+        </h2>
+        <p class="mt-5 text-lead text-encre">
+          Parrainer une ruche, ce n'est pas un abonnement à du miel : c'est
+          financer l'installation et l'entretien d'une colonie supplémentaire
+          sur le territoire. Nous nous occupons de tout, vous recevez la
+          récolte, les nouvelles et le droit de venir la voir quand vous voulez.
+        </p>
+      </header>
+
+      <!-- Particuliers -->
+      <div class="mt-16">
+        <h3
+          class="flex items-center gap-3 font-display text-h3 font-medium text-anthracite"
+        >
+          <Icone nom="utilisateurs" taille={22} classe="text-miel-600" />
+          Pour les particuliers
+        </h3>
+
+        <div class="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-6">
+          {
+            parrainagesParticuliers.map((formule) => (
+              <article
+                class:list={[
+                  "relative flex flex-col rounded-2xl p-7 sm:p-9",
+                  formule.miseEnAvant
+                    ? "border-2 border-miel-500 bg-miel-50 shadow-relief"
+                    : "border border-cire bg-creme",
+                ]}
+              >
+                {formule.etiquette && (
+                  <span class="etiquette etiquette-miel absolute -top-3 left-8">
+                    {formule.etiquette}
+                  </span>
+                )}
+
+                <h4 class="font-display text-h3 font-medium text-anthracite">
+                  {formule.nom}
+                </h4>
+                <p class="mt-2 text-[0.9375rem] italic text-miel-700">
+                  {formule.accroche}
+                </p>
+
+                <p class="mt-6 flex items-baseline gap-2">
+                  <span class="font-display text-5xl font-medium text-anthracite">
+                    {formule.prix}
+                  </span>
+                  <span class="text-[0.9375rem] text-grisdoux">
+                    {formule.prixDetail}
+                  </span>
+                </p>
+
+                <ul role="list" class="mt-7 flex-1 space-y-3">
+                  {formule.contreparties.map((c) => (
+                    <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+                      <Icone nom="check" taille={17} classe="mt-0.5 shrink-0 text-sapin-600" />
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={`/contact?parrainage=${formule.slug}`}
+                  class:list={[
+                    "btn mt-9 w-full",
+                    formule.miseEnAvant ? "btn-primaire" : "btn-secondaire",
+                  ]}
+                >
+                  Parrainer cette ruche
+                  <Icone nom="fleche-droite" taille={16} />
+                </a>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Entreprises -->
+      <div id="entreprises" class="mt-16 scroll-mt-28">
+        <h3
+          class="flex items-center gap-3 font-display text-h3 font-medium text-anthracite"
+        >
+          <Icone nom="mallette" taille={22} classe="text-miel-600" />
+          Pour les entreprises & collectivités
+        </h3>
+        <p class="mt-3 max-w-3xl leading-relaxed text-encre">
+          Un dispositif biodiversité lisible, chiffrable et appréciable par vos
+          équipes. Les factures sont émises en HT et le bilan annuel est pensé
+          pour alimenter directement un rapport RSE ou une déclaration CSRD.
+        </p>
+
+        <div class="mt-7 grid gap-5 lg:grid-cols-2 lg:gap-6">
+          {
+            parrainagesEntreprises.map((formule) => (
+              <article class="flex flex-col rounded-2xl border border-sapin-200 bg-sapin-50 p-7 sm:p-9">
+                <div class="flex items-start justify-between gap-4">
+                  <h4 class="font-display text-h3 font-medium text-anthracite">
+                    {formule.nom}
+                  </h4>
+                  {formule.etiquette && (
+                    <span class="etiquette etiquette-sapin shrink-0">
+                      {formule.etiquette}
+                    </span>
+                  )}
+                </div>
+                <p class="mt-2 text-[0.9375rem] italic text-sapin-700">
+                  {formule.accroche}
+                </p>
+
+                <p class="mt-6 flex items-baseline gap-2">
+                  <span class="font-display text-4xl font-medium text-anthracite">
+                    {formule.prix}
+                  </span>
+                  <span class="text-[0.9375rem] text-grisdoux">
+                    {formule.prixDetail}
+                  </span>
+                </p>
+
+                <ul role="list" class="mt-7 flex-1 space-y-3">
+                  {formule.contreparties.map((c) => (
+                    <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+                      <Icone nom="check" taille={17} classe="mt-0.5 shrink-0 text-sapin-600" />
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={`/contact?parrainage=${formule.slug}`}
+                  class="btn btn-secondaire mt-9 w-full"
+                >
+                  Demander un devis
+                  <Icone nom="fleche-droite" taille={16} />
+                </a>
+              </article>
+            ))
+          }
+        </div>
+
+        <p class="mt-6 flex items-start gap-3 text-[0.9375rem] leading-relaxed text-grisdoux">
+          <Icone nom="info" taille={18} classe="mt-0.5 shrink-0 text-miel-600" />
+          <span>
+            Mécénat : si votre parrainage soutient nos actions pédagogiques
+            auprès des scolaires, une partie du montant peut faire l'objet d'un
+            reçu fiscal via notre partenaire associatif. Parlons-en.
+          </span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Déroulé d'une visite ============== -->
+  <section
+    class="relative overflow-hidden bg-sapin-900 py-20 text-creme sm:py-24"
+    aria-labelledby="titre-deroule"
+  >
+    <div
+      class="trame-alveoles pointer-events-none absolute inset-0 opacity-[0.07]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="conteneur relative grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+      <div>
+        <p class="surtitre text-miel-300!">Comment ça se passe</p>
+        <h2
+          id="titre-deroule"
+          class="mt-5 font-display text-h2 font-medium text-creme"
+        >
+          Le déroulé d'une visite
+        </h2>
+
+        <ol role="list" class="mt-10 space-y-7">
+          {
+            [
+              {
+                t: "Accueil à la miellerie",
+                d: "On se gare sur le pré, on se présente, on explique les trois règles de sécurité — elles tiennent en une minute.",
+              },
+              {
+                t: "Habillage",
+                d: "Combinaison intégrale, voile, gants. On vérifie chaque fermeture éclair, surtout sur les enfants.",
+              },
+              {
+                t: "Montée au rucher",
+                d: "80 mètres à pied sur un chemin stabilisé. On s'arrête en route pour parler des fleurs du talus.",
+              },
+              {
+                t: "Ouverture de la ruche",
+                d: "Enfumage léger, on soulève le toit, on sort les cadres un par un. Chacun peut s'approcher à son rythme.",
+              },
+              {
+                t: "Dégustation",
+                d: "Retour à la miellerie, trois miels à l'aveugle, et toutes les questions qu'on n'a pas osé poser au rucher.",
+              },
+            ].map((etape, i) => (
+              <li class="flex gap-5">
+                <span
+                  class="grid size-9 shrink-0 place-items-center rounded-full border border-miel-300/40 font-display text-sm text-miel-300"
+                  aria-hidden="true"
+                >
+                  {i + 1}
+                </span>
+                <div>
+                  <h3 class="font-display text-lg text-creme">{etape.t}</h3>
+                  <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-creme/70">
+                    {etape.d}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <figure class="overflow-hidden rounded-[2rem] shadow-flottante">
+        <Image
+          src={rucheImg}
+          alt="Ruches en bois dans une clairière forestière au petit matin, enveloppées de brume."
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 46vw, 100vw"
+          loading="lazy"
+          class="aspect-4/5 w-full object-cover"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============== FAQ ============== -->
+  <section class="bg-creme py-20 sm:py-28" aria-labelledby="titre-faq">
+    <div class="conteneur">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <header class="lg:col-span-4">
+          <p class="surtitre">Questions fréquentes</p>
+          <h2
+            id="titre-faq"
+            class="mt-5 font-display text-h2 font-medium text-anthracite lg:sticky lg:top-28"
+          >
+            Ce qu'on nous demande le plus souvent
+          </h2>
+        </header>
+
+        <div class="lg:col-span-8">
+          <ul role="list" class="divide-y divide-cire border-y border-cire">
+            {
+              faqAteliers.map((item) => (
+                <li>
+                  {/* <details> natif : accessible et fonctionnel sans JavaScript */}
+                  <details class="group py-6">
+                    <summary class="flex cursor-pointer list-none items-start justify-between gap-6 rounded-sm [&::-webkit-details-marker]:hidden">
+                      <h3 class="font-display text-h3 font-medium text-anthracite transition-colors group-hover:text-miel-700">
+                        {item.question}
+                      </h3>
+                      <span
+                        class="mt-1 grid size-8 shrink-0 place-items-center rounded-full border border-cire text-miel-700 transition-transform duration-300 group-open:rotate-45"
+                        aria-hidden="true"
+                      >
+                        <Icone nom="plus" taille={16} />
+                      </span>
+                    </summary>
+                    <p class="mt-4 max-w-3xl pr-14 leading-relaxed text-encre">
+                      {item.reponse}
+                    </p>
+                  </details>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <BandeauCTA
+    surtitre="Offrir plutôt que réserver ?"
+    titre="Une carte cadeau imprimée sur papier à planter"
+    texte="Valable 18 mois sur tous nos ateliers et parrainages. Le papier contient des graines de fleurs mellifères : une fois la carte utilisée, on la met en terre."
+    lienPrincipal={{ libelle: "Commander une carte cadeau", href: "/contact?objet=cadeau" }}
+    lienSecondaire={{ libelle: "Voir nos produits", href: "/nos-produits" }}
+  />
+</BaseLayout>

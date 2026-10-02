@@ -1,0 +1,11 @@
+{
+  "name": "Rucher des Hautes Bruyères",
+  "short_name": "Hautes Bruyères",
+  "description": "Apiculture artisanale dans les Monts du Lyonnais : miels de terroir, produits de la ruche et ateliers pédagogiques.",
+  "lang": "fr-FR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf7ef",
+  "theme_color": "#35482d",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -1,0 +1,76 @@
+---
+interface Props {
+  classe?: string;
+  /** `clair` = version pour fond sombre. */
+  variante?: "sombre" | "clair";
+  /** Masque le texte et ne garde que l'emblème. */
+  embleme?: boolean;
+}
+
+const { classe = "", variante = "sombre", embleme = false } = Astro.props;
+
+const couleurTexte = variante === "clair" ? "text-creme" : "text-anthracite";
+const couleurSecondaire =
+  variante === "clair" ? "text-miel-200/85" : "text-grisdoux";
+---
+
+<span class={`inline-flex items-center gap-3 ${classe}`}>
+  <svg
+    width="44"
+    height="44"
+    viewBox="0 0 48 48"
+    fill="none"
+    aria-hidden="true"
+    class="shrink-0"
+  >
+    <!-- Alvéole extérieure -->
+    <path
+      d="M24 2.6 42.5 13.3v21.4L24 45.4 5.5 34.7V13.3Z"
+      stroke="currentColor"
+      stroke-width="2"
+      class="text-miel-500"
+      fill="none"></path>
+    <!-- Alvéole intérieure pleine -->
+    <path
+      d="M24 11.4 34.9 17.7v12.6L24 36.6l-10.9-6.3V17.7Z"
+      fill="currentColor"
+      class="text-miel-500/18"></path>
+    <!-- Abeille stylisée -->
+    <g
+      stroke="currentColor"
+      stroke-width="1.9"
+      stroke-linecap="round"
+      class={variante === "clair" ? "text-creme" : "text-sapin-700"}
+    >
+      <path d="M24 19.6c2.4 0 4.3 1.8 4.3 4v3.2c0 2.8-1.9 5-4.3 5s-4.3-2.2-4.3-5v-3.2c0-2.2 1.9-4 4.3-4Z"></path>
+      <path d="M20 23.8h8"></path>
+      <path d="M20 27.6h8"></path>
+    </g>
+    <g
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      class="text-miel-600"
+    >
+      <path d="M19.8 21.3c-2-1.9-4.9-2.2-6-1-1.2 1.2-.3 3.8 1.9 5.2"></path>
+      <path d="M28.2 21.3c2-1.9 4.9-2.2 6-1 1.2 1.2.3 3.8-1.9 5.2"></path>
+    </g>
+  </svg>
+
+  {
+    !embleme && (
+      <span class="flex flex-col leading-none">
+        <span
+          class={`font-display text-[1.0625rem] font-semibold tracking-tight ${couleurTexte} sm:text-lg`}
+        >
+          Rucher des Hautes Bruyères
+        </span>
+        <span
+          class={`mt-1 text-[0.625rem] font-medium uppercase tracking-[0.2em] ${couleurSecondaire}`}
+        >
+          Apiculture artisanale
+        </span>
+      </span>
+    )
+  }
+</span>

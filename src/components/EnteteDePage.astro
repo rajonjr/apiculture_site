@@ -1,0 +1,60 @@
+---
+
+interface Props {
+  surtitre: string;
+  titre: string;
+  intro: string;
+  filAriane: { libelle: string; href?: string }[];
+}
+
+const { surtitre, titre, intro, filAriane } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-creme pb-14 pt-10 sm:pb-16 sm:pt-14">
+  <div
+    class="lueur-miel pointer-events-none absolute inset-x-0 top-0 h-80"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="trame-alveoles pointer-events-none absolute -right-16 -top-16 hidden size-80 opacity-40 [mask-image:radial-gradient(closest-side,#000,transparent)] md:block"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="conteneur relative">
+    <!-- Fil d'Ariane -->
+    <nav aria-label="Fil d'Ariane">
+      <ol role="list" class="flex flex-wrap items-center gap-1.5 text-[0.8125rem] text-grisdoux">
+        {
+          filAriane.map((etape, i) => (
+            <li class="flex items-center gap-1.5">
+              {i > 0 && (
+                <span class="text-cire" aria-hidden="true">
+                  /
+                </span>
+              )}
+              {etape.href ? (
+                <a href={etape.href} class="transition-colors hover:text-miel-700">
+                  {etape.libelle}
+                </a>
+              ) : (
+                <span class="font-medium text-encre" aria-current="page">
+                  {etape.libelle}
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="mt-9 max-w-4xl">
+      <p class="surtitre">{surtitre}</p>
+      <h1 class="mt-5 font-display text-h1 font-medium text-anthracite">
+        {titre}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lead text-encre">{intro}</p>
+    </div>
+  </div>
+</section>

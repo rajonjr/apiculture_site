@@ -1,0 +1,111 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icone from "../components/Icone.astro";
+import { site } from "../data/site";
+
+/* Pistes proposées plutôt qu'un simple « retour à l'accueil » : une page 404
+   utile réoriente vers les intentions réelles (acheter, visiter, contacter). */
+const pistes = [
+  {
+    href: "/nos-produits",
+    icone: "pot-miel" as const,
+    titre: "Nos miels et produits",
+    texte: "Les récoltes de l'année, pot par pot, avec leurs notes de dégustation.",
+  },
+  {
+    href: "/le-rucher",
+    icone: "abeille" as const,
+    titre: "Le rucher",
+    texte: "Nos ruchers, nos méthodes et le calendrier d'une année d'apiculture.",
+  },
+  {
+    href: "/ateliers-parrainages",
+    icone: "ecole" as const,
+    titre: "Ateliers & parrainages",
+    texte: "Visites, ateliers scolaires, séminaires et parrainage de ruches.",
+  },
+  {
+    href: "/contact",
+    icone: "localisation" as const,
+    titre: "Contact & accès",
+    texte: "Horaires de la boutique, itinéraire jusqu'à la miellerie, formulaire.",
+  },
+];
+---
+
+<BaseLayout
+  titre="Page introuvable"
+  description="Cette page n'existe pas ou a été déplacée. Retrouvez nos miels, le rucher, les ateliers et nos coordonnées."
+  noindex
+>
+  <section class="relative overflow-hidden bg-creme py-24 sm:py-32">
+    <div class="trame-alveoles-fine absolute inset-0 opacity-60" aria-hidden="true"></div>
+
+    <div class="conteneur relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <span
+          class="mx-auto grid size-20 place-items-center rounded-full bg-miel-100 text-miel-700"
+          aria-hidden="true"
+        >
+          <Icone nom="abeille" taille={38} epaisseur={1.6} />
+        </span>
+
+        <p class="surtitre surtitre-centre mt-8">Erreur 404</p>
+        <h1 class="mt-4 font-display text-h1 font-medium text-anthracite">
+          Cette page a pris la clé des champs
+        </h1>
+        <p class="mx-auto mt-6 max-w-xl text-lead text-encre">
+          Comme une butineuse qui rentre bredouille : l'adresse demandée
+          n'existe pas, ou elle a été déplacée depuis votre dernière visite.
+          Rien de grave — voici par où reprendre.
+        </p>
+      </div>
+
+      <ul
+        role="list"
+        class="mx-auto mt-14 grid max-w-4xl gap-4 sm:grid-cols-2"
+      >
+        {
+          pistes.map((piste) => (
+            <li>
+              <a href={piste.href} class="carte carte-lien group flex h-full gap-4 p-6">
+                <span
+                  class="grid size-11 shrink-0 place-items-center rounded-xl bg-sapin-50 text-sapin-700 transition-colors group-hover:bg-sapin-100"
+                  aria-hidden="true"
+                >
+                  <Icone nom={piste.icone} taille={21} />
+                </span>
+                <span class="min-w-0">
+                  <span class="flex items-center gap-1.5 font-display text-h4 text-anthracite">
+                    {piste.titre}
+                    <Icone
+                      nom="fleche-droite"
+                      taille={16}
+                      classe="shrink-0 text-miel-600 transition-transform duration-200 group-hover:translate-x-1"
+                    />
+                  </span>
+                  <span class="mt-1.5 block text-sm leading-relaxed text-grisdoux">
+                    {piste.texte}
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mx-auto mt-12 max-w-xl text-center text-sm leading-relaxed text-grisdoux">
+        Vous êtes arrivé ici depuis un lien de notre site&nbsp;? Signalez-le
+        nous à
+        <a href={`mailto:${site.contact.email}`} class="lien-souligne text-sm!">
+          {site.contact.email}
+        </a>
+        , nous le corrigerons.
+      </p>
+
+      <div class="mt-8 flex justify-center">
+        <a href="/" class="btn btn-primaire">Retour à l'accueil</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

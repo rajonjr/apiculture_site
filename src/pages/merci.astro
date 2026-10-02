@@ -1,0 +1,71 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icone from "../components/Icone.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  titre="Message bien reçu"
+  description="Votre message a bien été transmis au Rucher des Hautes Bruyères. Nous répondons sous 48 heures ouvrées."
+  noindex
+>
+  <section class="bg-creme py-24 sm:py-32">
+    <div class="conteneur-etroit text-center">
+      <span
+        class="mx-auto grid size-20 place-items-center rounded-full bg-sapin-100 text-sapin-700"
+        aria-hidden="true"
+      >
+        <Icone nom="check" taille={38} epaisseur={1.8} />
+      </span>
+
+      <h1 class="mt-8 font-display text-h1 font-medium text-anthracite">
+        Merci, c'est bien parti
+      </h1>
+      <p class="mx-auto mt-6 max-w-xl text-lead text-encre">
+        Votre message est arrivé. Nous y répondons sous 48 heures ouvrées — un
+        peu plus lentement en juin, quand les hausses sont pleines et que nous
+        passons nos journées au rucher.
+      </p>
+
+      <div class="mt-10 rounded-2xl border border-cire bg-sable p-7 text-left sm:p-8">
+        <h2 class="font-display text-h3 text-anthracite">En attendant</h2>
+        <ul role="list" class="mt-5 space-y-3.5">
+          <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+            <Icone nom="telephone" taille={18} classe="mt-0.5 shrink-0 text-miel-600" />
+            <span>
+              Pour une urgence (essaim, commande du jour), appelez le
+              <a
+                href={`tel:${site.contact.telephone.replace(/\s/g, "")}`}
+                class="lien-souligne text-[0.9375rem]!"
+              >
+                {site.contact.telephoneAffiche}
+              </a>.
+            </span>
+          </li>
+          <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+            <Icone nom="horloge" taille={18} classe="mt-0.5 shrink-0 text-miel-600" />
+            <span>
+              La boutique est ouverte du mercredi au vendredi (9h30-12h30 /
+              14h-18h) et le samedi matin (9h-13h).
+            </span>
+          </li>
+          <li class="flex gap-3 text-[0.9375rem] leading-relaxed text-encre">
+            <Icone nom="pot-miel" taille={18} classe="mt-0.5 shrink-0 text-miel-600" />
+            <span>
+              Si vous hésitez encore entre deux miels, la
+              <a href="/nos-produits" class="lien-souligne text-[0.9375rem]!">
+                fiche de chaque récolte
+              </a>
+              détaille les notes de dégustation et les accords.
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-10 flex flex-col justify-center gap-3.5 sm:flex-row">
+        <a href="/" class="btn btn-primaire">Retour à l'accueil</a>
+        <a href="/le-rucher" class="btn btn-secondaire">Découvrir le rucher</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

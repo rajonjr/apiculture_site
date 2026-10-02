@@ -1,0 +1,77 @@
+---
+import Icone from "./Icone.astro";
+
+interface Props {
+  surtitre?: string;
+  titre: string;
+  texte: string;
+  lienPrincipal: { libelle: string; href: string };
+  lienSecondaire?: { libelle: string; href: string };
+}
+
+const {
+  surtitre = "Passez nous voir",
+  titre,
+  texte,
+  lienPrincipal,
+  lienSecondaire,
+} = Astro.props;
+---
+
+<section class="bg-creme py-20 sm:py-24" aria-labelledby="titre-bandeau-cta">
+  <div class="conteneur">
+    <div
+      class="relative overflow-hidden rounded-[2rem] bg-miel-500 px-7 py-14 sm:rounded-[2.5rem] sm:px-12 sm:py-16 lg:px-16 lg:py-20"
+    >
+      <div
+        class="trame-alveoles-fine pointer-events-none absolute inset-0 opacity-[0.17]"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-miel-200/35 blur-3xl"
+        aria-hidden="true"
+      >
+      </div>
+
+      <div class="relative mx-auto max-w-3xl text-center">
+        <p
+          class="text-[0.6875rem] font-bold uppercase tracking-[0.2em] text-miel-900/70"
+        >
+          {surtitre}
+        </p>
+        <h2
+          id="titre-bandeau-cta"
+          class="mt-5 font-display text-h2 font-medium text-miel-900"
+        >
+          {titre}
+        </h2>
+        <p class="mx-auto mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-miel-900/80">
+          {texte}
+        </p>
+
+        <div
+          class="mt-9 flex flex-col items-center justify-center gap-3.5 sm:flex-row"
+        >
+          <a
+            href={lienPrincipal.href}
+            class="btn w-full bg-miel-900 text-creme hover:bg-anthracite sm:w-auto sm:px-8!"
+          >
+            {lienPrincipal.libelle}
+            <Icone nom="fleche-droite" taille={17} />
+          </a>
+          {
+            lienSecondaire && (
+              <a
+                href={lienSecondaire.href}
+                class="btn w-full border border-miel-900/25 text-miel-900 hover:bg-miel-900/10 sm:w-auto sm:px-7!"
+              >
+                {lienSecondaire.libelle}
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

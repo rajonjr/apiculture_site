@@ -1,0 +1,176 @@
+---
+import { Image } from "astro:assets";
+import Icone from "./Icone.astro";
+import heroRucher from "../assets/images/hero-rucher.jpg";
+import { chiffresCles } from "../data/site";
+---
+
+<!-- =====================================================================
+     HERO SECTION
+     Mobile-first : une colonne (texte → visuel → chiffres).
+     À partir de lg : grille asymétrique 6/5 avec visuel en pleine hauteur.
+     ===================================================================== -->
+<section
+  class="relative overflow-hidden bg-creme pt-10 sm:pt-14 lg:pt-20"
+  aria-labelledby="titre-hero"
+>
+  <!-- Décor : halo de lumière chaude + trame d'alvéoles -->
+  <div class="lueur-miel pointer-events-none absolute inset-x-0 top-0 h-[42rem]" aria-hidden="true"></div>
+  <div
+    class="trame-alveoles pointer-events-none absolute -right-20 -top-24 hidden size-[30rem] opacity-50 [mask-image:radial-gradient(closest-side,#000,transparent)] lg:block"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="conteneur relative">
+    <div class="grid items-center gap-12 lg:grid-cols-11 lg:gap-14 xl:gap-20">
+      <!-- ============== Colonne éditoriale ============== -->
+      <div class="lg:col-span-6">
+        <p class="surtitre">Apiculture artisanale · Monts du Lyonnais</p>
+
+        <h1
+          id="titre-hero"
+          class="mt-6 font-display text-display font-medium text-anthracite"
+        >
+          Des miels qui ont le goût de
+          <span class="relative inline-block whitespace-nowrap text-miel-700">
+            leur paysage
+            <!-- Soulignement organique dessiné à la main -->
+            <svg
+              class="absolute -bottom-1 left-0 h-[0.3em] w-full text-miel-400/70 sm:-bottom-2"
+              viewBox="0 0 320 16"
+              preserveAspectRatio="none"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M3 11.5C58 5.5 135 2.8 196 5.2c40 1.6 82 4.4 121 8.3"
+                stroke="currentColor"
+                stroke-width="4.5"
+                stroke-linecap="round"></path>
+            </svg>
+          </span>
+        </h1>
+
+        <p class="mt-8 max-w-xl text-lead text-encre">
+          Cent quatre-vingts colonies, neuf ruchers sédentaires posés entre les
+          prairies et la forêt. Nous récoltons à froid, nous ne mélangeons jamais
+          deux floraisons, et nous ouvrons nos ruches à qui veut comprendre.
+        </p>
+
+        <!-- Appels à l'action -->
+        <div class="mt-10 flex flex-col gap-3.5 sm:flex-row sm:items-center">
+          <a href="/nos-produits" class="btn btn-primaire group sm:px-8!">
+            Découvrir nos miels
+            <Icone
+              nom="fleche-droite"
+              taille={18}
+              classe="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </a>
+          <a href="/ateliers-parrainages" class="btn btn-secondaire sm:px-7!">
+            <Icone nom="abeille" taille={18} />
+            Visiter le rucher
+          </a>
+        </div>
+
+        <!-- Bandeau de confiance -->
+        <ul
+          role="list"
+          class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-cire pt-7 text-[0.8125rem] font-medium text-grisdoux"
+        >
+          <li class="flex items-center gap-2">
+            <Icone nom="feuille" taille={16} classe="text-sapin-500" />
+            Certifié Agriculture Biologique
+          </li>
+          <li class="flex items-center gap-2">
+            <Icone nom="flocon" taille={16} classe="text-sapin-500" />
+            Jamais chauffé au-delà de 35 °C
+          </li>
+          <li class="flex items-center gap-2">
+            <Icone nom="pot-miel" taille={16} classe="text-sapin-500" />
+            Vente directe du producteur
+          </li>
+        </ul>
+      </div>
+
+      <!-- ============== Colonne visuelle ============== -->
+      <div class="relative lg:col-span-5">
+        <!-- Cadre photographique -->
+        <figure class="relative">
+          <div
+            class="relative overflow-hidden rounded-[2rem] shadow-flottante sm:rounded-[2.5rem]"
+          >
+            <Image
+              src={heroRucher}
+              alt="Mathieu Vasseur, apiculteur, debout parmi ses ruches en bois au bord d'une prairie fleurie, au soleil couchant."
+              widths={[480, 768, 1024, 1360]}
+              sizes="(min-width: 1024px) 44vw, 100vw"
+              loading="eager"
+              fetchpriority="high"
+              decoding="sync"
+              class="aspect-4/3 w-full object-cover sm:aspect-3/2 lg:aspect-4/5"
+            />
+            <!-- Léger voile pour asseoir la carte flottante -->
+            <div
+              class="pointer-events-none absolute inset-0 bg-linear-to-t from-anthracite/35 via-transparent to-transparent"
+              aria-hidden="true"
+            >
+            </div>
+          </div>
+
+          <figcaption class="sr-only">
+            Le rucher principal des Hautes Bruyères, à Saint-Martin-en-Haut.
+          </figcaption>
+
+          <!-- Carte flottante : récolte en cours -->
+          <div
+            class="absolute -bottom-6 left-4 right-4 rounded-2xl border border-white/60 bg-creme/92 p-4 shadow-relief backdrop-blur-md sm:left-6 sm:right-auto sm:max-w-[19rem] sm:p-5"
+          >
+            <div class="flex items-center gap-4">
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-xl bg-miel-100 text-miel-700"
+                aria-hidden="true"
+              >
+                <Icone nom="goutte" taille={21} />
+              </span>
+              <div class="min-w-0">
+                <p
+                  class="text-[0.625rem] font-bold uppercase tracking-[0.16em] text-miel-700"
+                >
+                  Récolte en cours
+                </p>
+                <p class="mt-1 font-display text-lg leading-tight text-anthracite">
+                  Tilleul 2026
+                </p>
+                <p class="mt-0.5 text-[0.8125rem] text-grisdoux">
+                  Extrait le 14 juillet · 212 pots
+                </p>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </div>
+
+    <!-- ============== Chiffres clés ============== -->
+    <dl
+      class="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-cire bg-cire sm:mt-24 lg:grid-cols-4"
+    >
+      {
+        chiffresCles.map((chiffre) => (
+          <div class="flex flex-col items-center gap-1 bg-creme px-4 py-7 text-center sm:py-9">
+            <dt class="sr-only">{chiffre.libelle}</dt>
+            <dd class="font-display text-4xl font-medium leading-none text-anthracite sm:text-5xl">
+              {chiffre.valeur}
+              <span class="text-miel-500">{chiffre.unite}</span>
+            </dd>
+            <dd class="text-[0.8125rem] font-medium uppercase tracking-[0.1em] text-grisdoux">
+              {chiffre.libelle}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
